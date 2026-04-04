@@ -59,7 +59,7 @@ export default withMermaid(
               { text: '021. 合并两个有序链表', link: '/problems/021-merge-two-sorted-lists' },
               { text: '035. 搜索插入位置', link: '/problems/035-search-insert-position' },
               { text: '104. 二叉树的最大深度', link: '/problems/104-maximum-depth-of-binary-tree' },
-              { text: '121. 买卖股票的最佳时机', link: '/problems/121-best-time-to-buy-sell-stock' },
+              { text: '121. 买卖股票的最佳时机', link: '/problems/121-best-time-to-buy-and-sell-stock' },
               { text: '136. 只出现一次的数字', link: '/problems/136-single-number' },
               { text: '141. 环形链表', link: '/problems/141-linked-list-cycle' },
               { text: '160. 相交链表', link: '/problems/160-intersection-of-two-linked-lists' },
