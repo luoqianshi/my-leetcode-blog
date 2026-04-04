@@ -1,5 +1,5 @@
 <template>
-  <DefaultLayout>
+  <DefaultTheme.Layout>
     <template #layout-top>
       <div class="theme-toggle-bar">
         <button
@@ -13,7 +13,7 @@
         </button>
       </div>
     </template>
-  </DefaultLayout>
+  </DefaultTheme.Layout>
 </template>
 
 <script setup lang="ts">
