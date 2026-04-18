@@ -38,6 +38,14 @@ jobs:
       - name: Build with VitePress
         run: npm run docs:build
 
+      - name: Rewrite clean URLs
+        run: |
+          find docs/.vitepress/dist -name '*.html' -not -name 'index.html' | while read file; do
+            dir="${file%.html}"
+            mkdir -p "$dir"
+            mv "$file" "$dir/index.html"
+          done
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

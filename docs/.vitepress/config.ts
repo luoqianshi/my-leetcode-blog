@@ -4,6 +4,7 @@ import { withMermaid } from 'vitepress-plugin-mermaid'
 export default withMermaid(
   defineConfig({
     base: '/my-leetcode-blog/',
+    cleanUrls: true,
     lang: 'zh-CN',
     title: 'LeetCode Hot 100 题解',
     description: 'LeetCode Hot 100 Python 题解个人知识库',
