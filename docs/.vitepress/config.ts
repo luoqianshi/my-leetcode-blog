@@ -176,11 +176,11 @@ export default withMermaid(
 
       footer: {
         message: '基于 VitePress 构建',
-        copyright: '© 2024 LeetCode Hot 100 题解'
+        copyright: '© 2026 LeetCode Hot 100 题解，Build by 骆谦实.'
       },
 
       editLink: {
-        pattern: 'https://github.com/your-repo/edit/main/docs/:path',
+        pattern: 'https://github.com/luoqianshi/my-leetcode-blog/edit/main/docs/:path',
         text: '在 GitHub 上编辑此页'
       }
     },

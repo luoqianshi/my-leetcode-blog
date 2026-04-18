@@ -16,6 +16,9 @@ my-leetcode-blog/
 │   ├── public/
 │   │   └── logo.svg           # 网站 Logo
 │   └── index.md               # 首页
+├── .github/
+│   └── workflows/
+│       └── deploy.yml         # GitHub Pages 自动部署配置
 ├── netlify.toml               # Netlify 部署配置
 ├── package.json
 └── tsconfig.json
@@ -46,7 +49,7 @@ my-leetcode-blog/
 - **前端**: Vue 3.5.13
 - **数学公式**: markdown-it-mathjax3 + KaTeX
 - **图表**: vitepress-plugin-mermaid + Mermaid
-- **部署**: Netlify
+- **部署**: Netlify / GitHub Pages
 
 ## 本地开发
 
@@ -63,6 +66,27 @@ npm run docs:build
 # 预览生产构建
 npm run docs:preview
 ```
+
+## 部署
+
+### GitHub Pages
+
+项目已配置 GitHub Actions 自动部署到 GitHub Pages：
+
+1. 在 GitHub 仓库设置中启用 Pages功能，Source 选择 "GitHub Actions"
+2. 推送代码到 `main` 分支后，GitHub Actions 将自动构建并部署
+3. 部署完成后访问 `https://<username>.github.io/my-leetcode-blog/`
+
+手动触发部署：在 GitHub 仓库页面点击 Actions -> Deploy VitePress site to Pages -> Run workflow
+
+### Netlify
+
+部署到 Netlify：
+
+1. 将项目推送到 GitHub
+2. 在 Netlify 中导入 GitHub 仓库
+3. 构建命令留空，生产分支留空
+4. 点击部署
 
 ## 功能特性
 
