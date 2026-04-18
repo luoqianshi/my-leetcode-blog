@@ -34,7 +34,7 @@ export default withMermaid(
       logo: '/logo.svg',
       nav: [
         { text: '首页', link: '/' },
-        { text: '题目总览', link: '/problems/' },
+        { text: '题目总览', link: '/problems/001-two-sum' },
         { text: '知识点渐进', link: '/review/01-bit-manipulation' },
       ],
 

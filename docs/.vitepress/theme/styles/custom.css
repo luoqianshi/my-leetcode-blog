@@ -443,12 +443,126 @@ body {
   margin-bottom: 20px;
 }
 
-.review-mermaid {
-  overflow-x: auto;
-  padding: 16px;
+/* ===== Learning Path Map ===== */
+.learning-path-map {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 20px 16px;
   border-radius: 12px;
   background: var(--lc-card-bg);
   border: 1px solid var(--lc-card-border);
+}
+
+.path-level {
+  padding: 12px 16px;
+  border-radius: 10px;
+}
+
+.path-level-beginner {
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.path-level-intermediate {
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+}
+
+.path-level-advanced {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+.path-level-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.path-level-icon {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.beginner-icon { background: var(--lc-green); }
+.intermediate-icon { background: var(--lc-orange); }
+.advanced-icon { background: var(--lc-red); }
+
+.path-level-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--vp-c-text-1);
+}
+
+.path-level-subtitle {
+  font-size: 13px;
+  color: var(--vp-c-text-3);
+}
+
+.path-nodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.path-node {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+
+.path-node:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.path-node-beginner {
+  background: var(--lc-green-bg);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--lc-green);
+}
+
+.path-node-intermediate {
+  background: var(--lc-orange-bg);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: var(--lc-orange);
+}
+
+.path-node-advanced {
+  background: var(--lc-red-bg);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: var(--lc-red);
+}
+
+.path-node-id {
+  font-weight: 700;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.path-node-title {
+  font-weight: 500;
+}
+
+.path-level-connector {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0;
+}
+
+.connector-arrow {
+  width: 40px;
+  height: 28px;
 }
 
 .review-level-section {
@@ -656,8 +770,17 @@ body {
     max-width: 100%;
   }
 
-  .review-mermaid {
-    padding: 8px;
+  .learning-path-map {
+    padding: 12px 8px;
+  }
+
+  .path-nodes {
+    gap: 6px;
+  }
+
+  .path-node {
+    padding: 4px 8px;
+    font-size: 12px;
   }
 }
 

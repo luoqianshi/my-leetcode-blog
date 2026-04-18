@@ -3,8 +3,56 @@
     <div class="review-map-section">
       <h2 class="review-section-title">学习路径</h2>
       <p class="review-section-desc">按难度渐进排列，建议按顺序学习，前置知识为后续基础</p>
-      <div class="review-mermaid">
-        <Mermaid id="review-learning-path" :graph="mermaidCode" />
+      <div class="learning-path-map">
+        <div class="path-level path-level-beginner">
+          <div class="path-level-header">
+            <span class="path-level-icon beginner-icon"></span>
+            <span class="path-level-title">初级篇</span>
+            <span class="path-level-subtitle">入门必刷</span>
+          </div>
+          <div class="path-nodes">
+            <a v-for="mod in beginnerModules" :key="mod.id" :href="withBase(mod.link)" class="path-node path-node-beginner">
+              <span class="path-node-id">{{ mod.id }}</span>
+              <span class="path-node-title">{{ mod.title }}</span>
+            </a>
+          </div>
+        </div>
+        <div class="path-level-connector">
+          <svg viewBox="0 0 40 32" class="connector-arrow">
+            <path d="M20 0 L20 22 M12 16 L20 24 L28 16" stroke="var(--vp-c-text-3)" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
+          </svg>
+        </div>
+        <div class="path-level path-level-intermediate">
+          <div class="path-level-header">
+            <span class="path-level-icon intermediate-icon"></span>
+            <span class="path-level-title">中级篇</span>
+            <span class="path-level-subtitle">进阶提升</span>
+          </div>
+          <div class="path-nodes">
+            <a v-for="mod in intermediateModules" :key="mod.id" :href="withBase(mod.link)" class="path-node path-node-intermediate">
+              <span class="path-node-id">{{ mod.id }}</span>
+              <span class="path-node-title">{{ mod.title }}</span>
+            </a>
+          </div>
+        </div>
+        <div class="path-level-connector">
+          <svg viewBox="0 0 40 32" class="connector-arrow">
+            <path d="M20 0 L20 22 M12 16 L20 24 L28 16" stroke="var(--vp-c-text-3)" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
+          </svg>
+        </div>
+        <div class="path-level path-level-advanced">
+          <div class="path-level-header">
+            <span class="path-level-icon advanced-icon"></span>
+            <span class="path-level-title">高级篇</span>
+            <span class="path-level-subtitle">冲刺大厂</span>
+          </div>
+          <div class="path-nodes">
+            <a v-for="mod in advancedModules" :key="mod.id" :href="withBase(mod.link)" class="path-node path-node-advanced">
+              <span class="path-node-id">{{ mod.id }}</span>
+              <span class="path-node-title">{{ mod.title }}</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -75,6 +123,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { withBase } from 'vitepress'
 import ReviewCard from './ReviewCard.vue'
 
 interface ReviewModule {
@@ -309,55 +358,4 @@ const modules: ReviewModule[] = [
 const beginnerModules = computed(() => modules.filter(m => m.level === 'beginner'))
 const intermediateModules = computed(() => modules.filter(m => m.level === 'intermediate'))
 const advancedModules = computed(() => modules.filter(m => m.level === 'advanced'))
-
-const mermaidCode = computed(() => `flowchart TB
-  subgraph 初级篇["🟢 初级篇 — 入门必刷"]
-    direction LR
-    A01["01 位运算"] ~~~ A02["02 哈希表"]
-    A02 ~~~ A03["03 双指针"]
-    A03 ~~~ A04["04 栈"]
-    A04 ~~~ A05["05 链表入门"]
-    A05 ~~~ A06["06 二叉树入门"]
-  end
-  subgraph 中级篇["🟡 中级篇 — 进阶提升"]
-    direction LR
-    B07["07 滑动窗口"] ~~~ B08["08 数组进阶"]
-    B08 ~~~ B09["09 二分查找"]
-    B09 ~~~ B10["10 字符串"]
-    B10 ~~~ B11["11 贪心"]
-    B11 ~~~ B12["12 回溯"]
-    B12 ~~~ B13["13 堆"]
-    B13 ~~~ B14["14 一维DP"]
-    B14 ~~~ B15["15 链表进阶"]
-  end
-  subgraph 高级篇["🔴 高级篇 — 冲刺大厂"]
-    direction LR
-    C16["16 图论"] ~~~ C17["17 多维DP"]
-    C17 ~~~ C18["18 二叉树进阶"]
-    C18 ~~~ C19["19 DP高级"]
-    C19 ~~~ C20["20 矩阵"]
-  end
-  A06 -.-> B07
-  B15 -.-> C16
-
-  style A01 fill:#d1fae5,stroke:#10b981,color:#065f46
-  style A02 fill:#d1fae5,stroke:#10b981,color:#065f46
-  style A03 fill:#d1fae5,stroke:#10b981,color:#065f46
-  style A04 fill:#d1fae5,stroke:#10b981,color:#065f46
-  style A05 fill:#d1fae5,stroke:#10b981,color:#065f46
-  style A06 fill:#d1fae5,stroke:#10b981,color:#065f46
-  style B07 fill:#fef3c7,stroke:#f59e0b,color:#92400e
-  style B08 fill:#fef3c7,stroke:#f59e0b,color:#92400e
-  style B09 fill:#fef3c7,stroke:#f59e0b,color:#92400e
-  style B10 fill:#fef3c7,stroke:#f59e0b,color:#92400e
-  style B11 fill:#fef3c7,stroke:#f59e0b,color:#92400e
-  style B12 fill:#fef3c7,stroke:#f59e0b,color:#92400e
-  style B13 fill:#fef3c7,stroke:#f59e0b,color:#92400e
-  style B14 fill:#fef3c7,stroke:#f59e0b,color:#92400e
-  style B15 fill:#fef3c7,stroke:#f59e0b,color:#92400e
-  style C16 fill:#fee2e2,stroke:#ef4444,color:#991b1b
-  style C17 fill:#fee2e2,stroke:#ef4444,color:#991b1b
-  style C18 fill:#fee2e2,stroke:#ef4444,color:#991b1b
-  style C19 fill:#fee2e2,stroke:#ef4444,color:#991b1b
-  style C20 fill:#fee2e2,stroke:#ef4444,color:#991b1b`)
 </script>
