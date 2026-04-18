@@ -310,35 +310,35 @@ const beginnerModules = computed(() => modules.filter(m => m.level === 'beginner
 const intermediateModules = computed(() => modules.filter(m => m.level === 'intermediate'))
 const advancedModules = computed(() => modules.filter(m => m.level === 'advanced'))
 
-const mermaidCode = computed(() => `graph LR
-  subgraph 初级篇
+const mermaidCode = computed(() => `flowchart TB
+  subgraph 初级篇["🟢 初级篇 — 入门必刷"]
     direction LR
-    A01["01 位运算"] --> A02["02 哈希表"]
-    A02 --> A03["03 双指针"]
-    A03 --> A04["04 栈"]
-    A04 --> A05["05 链表入门"]
-    A05 --> A06["06 二叉树入门"]
+    A01["01 位运算"] ~~~ A02["02 哈希表"]
+    A02 ~~~ A03["03 双指针"]
+    A03 ~~~ A04["04 栈"]
+    A04 ~~~ A05["05 链表入门"]
+    A05 ~~~ A06["06 二叉树入门"]
   end
-  subgraph 中级篇
+  subgraph 中级篇["🟡 中级篇 — 进阶提升"]
     direction LR
-    B07["07 滑动窗口"] --> B08["08 数组进阶"]
-    B08 --> B09["09 二分查找"]
-    B09 --> B10["10 字符串"]
-    B10 --> B11["11 贪心"]
-    B11 --> B12["12 回溯"]
-    B12 --> B13["13 堆"]
-    B13 --> B14["14 一维DP"]
-    B14 --> B15["15 链表进阶"]
+    B07["07 滑动窗口"] ~~~ B08["08 数组进阶"]
+    B08 ~~~ B09["09 二分查找"]
+    B09 ~~~ B10["10 字符串"]
+    B10 ~~~ B11["11 贪心"]
+    B11 ~~~ B12["12 回溯"]
+    B12 ~~~ B13["13 堆"]
+    B13 ~~~ B14["14 一维DP"]
+    B14 ~~~ B15["15 链表进阶"]
   end
-  subgraph 高级篇
+  subgraph 高级篇["🔴 高级篇 — 冲刺大厂"]
     direction LR
-    C16["16 图论"] --> C17["17 多维DP"]
-    C17 --> C18["18 二叉树进阶"]
-    C18 --> C19["19 DP高级"]
-    C19 --> C20["20 矩阵"]
+    C16["16 图论"] ~~~ C17["17 多维DP"]
+    C17 ~~~ C18["18 二叉树进阶"]
+    C18 ~~~ C19["19 DP高级"]
+    C19 ~~~ C20["20 矩阵"]
   end
-  A06 --> B07
-  B15 --> C16
+  A06 -.-> B07
+  B15 -.-> C16
 
   style A01 fill:#d1fae5,stroke:#10b981,color:#065f46
   style A02 fill:#d1fae5,stroke:#10b981,color:#065f46
