@@ -35,22 +35,50 @@ export default withMermaid(
       nav: [
         { text: '首页', link: '/' },
         { text: '题目总览', link: '/problems/' },
-        {
-          text: '知识点分类',
-          items: [
-            { text: '位运算', link: '/problems/136-single-number' },
-            { text: '哈希表', link: '/problems/001-two-sum' },
-            { text: '双指针', link: '/problems/283-move-zeroes' },
-            { text: '栈', link: '/problems/020-valid-parentheses' },
-            { text: '链表', link: '/problems/206-reverse-linked-list' },
-            { text: '二叉树', link: '/problems/226-invert-binary-tree' },
-            { text: '滑动窗口', link: '/problems/003-longest-substring-without-repeating-characters' },
-            { text: '动态规划', link: '/problems/070-climbing-stairs' },
-          ]
-        }
+        { text: '知识点渐进', link: '/review/01-bit-manipulation' },
       ],
 
       sidebar: {
+        '/review/': [
+          {
+            text: '初级篇 — 入门必刷',
+            collapsed: false,
+            items: [
+              { text: '01. 位运算技巧', link: '/review/01-bit-manipulation' },
+              { text: '02. 哈希表基础', link: '/review/02-hash-table' },
+              { text: '03. 双指针入门', link: '/review/03-two-pointers' },
+              { text: '04. 栈基础', link: '/review/04-stack' },
+              { text: '05. 链表入门', link: '/review/05-linked-list-basics' },
+              { text: '06. 二叉树入门', link: '/review/06-binary-tree-basics' },
+            ]
+          },
+          {
+            text: '中级篇 — 进阶提升',
+            collapsed: false,
+            items: [
+              { text: '07. 滑动窗口', link: '/review/07-sliding-window' },
+              { text: '08. 数组进阶技巧', link: '/review/08-array-advanced' },
+              { text: '09. 二分查找', link: '/review/09-binary-search' },
+              { text: '10. 字符串技巧', link: '/review/10-string-techniques' },
+              { text: '11. 贪心算法', link: '/review/11-greedy' },
+              { text: '12. 回溯算法', link: '/review/12-backtracking' },
+              { text: '13. 堆', link: '/review/13-heap' },
+              { text: '14. 一维动态规划', link: '/review/14-1d-dp' },
+              { text: '15. 链表进阶', link: '/review/15-linked-list-advanced' },
+            ]
+          },
+          {
+            text: '高级篇 — 冲刺大厂',
+            collapsed: false,
+            items: [
+              { text: '16. 图论', link: '/review/16-graph' },
+              { text: '17. 多维动态规划', link: '/review/17-multidim-dp' },
+              { text: '18. 二叉树进阶', link: '/review/18-binary-tree-advanced' },
+              { text: '19. 动态规划高级', link: '/review/19-dp-advanced' },
+              { text: '20. 矩阵操作', link: '/review/20-matrix' },
+            ]
+          }
+        ],
         '/problems/': [
           {
             text: '🟢 简单',

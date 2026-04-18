@@ -39,30 +39,49 @@
       </div>
     </section>
 
-    <FilterBar
-      :all-tags="allTags"
-      @filter="onFilter"
-    />
-
-    <div class="problem-grid">
-      <ProblemCard
-        v-for="(problem, index) in filteredProblems"
-        :key="problem.number"
-        :number="problem.number"
-        :title="problem.title"
-        :difficulty="problem.difficulty"
-        :tags="problem.tags"
-        :summary="problem.summary"
-        :link="problem.link"
-        :starred="problem.starred"
-        :index="index"
-        @toggle-star="onToggleStar"
-      />
+    <div class="tab-bar">
+      <button
+        class="tab-btn"
+        :class="{ active: activeTab === 'problems' }"
+        @click="activeTab = 'problems'"
+      >题目总览</button>
+      <button
+        class="tab-btn"
+        :class="{ active: activeTab === 'review' }"
+        @click="activeTab = 'review'"
+      >知识点总览</button>
     </div>
 
-    <div v-if="filteredProblems.length === 0" style="text-align: center; padding: 60px 20px; color: var(--vp-c-text-3);">
-      <p style="font-size: 48px; margin-bottom: 12px;">🔍</p>
-      <p style="font-size: 16px;">没有找到匹配的题目</p>
+    <div v-show="activeTab === 'problems'">
+      <FilterBar
+        :all-tags="allTags"
+        @filter="onFilter"
+      />
+
+      <div class="problem-grid">
+        <ProblemCard
+          v-for="(problem, index) in filteredProblems"
+          :key="problem.number"
+          :number="problem.number"
+          :title="problem.title"
+          :difficulty="problem.difficulty"
+          :tags="problem.tags"
+          :summary="problem.summary"
+          :link="problem.link"
+          :starred="problem.starred"
+          :index="index"
+          @toggle-star="onToggleStar"
+        />
+      </div>
+
+      <div v-if="filteredProblems.length === 0" style="text-align: center; padding: 60px 20px; color: var(--vp-c-text-3);">
+        <p style="font-size: 48px; margin-bottom: 12px;">🔍</p>
+        <p style="font-size: 16px;">没有找到匹配的题目</p>
+      </div>
+    </div>
+
+    <div v-show="activeTab === 'review'">
+      <ReviewTab />
     </div>
   </div>
 </template>
@@ -71,6 +90,9 @@
 import { ref, computed, onMounted } from 'vue'
 import FilterBar from './FilterBar.vue'
 import ProblemCard from './ProblemCard.vue'
+import ReviewTab from './ReviewTab.vue'
+
+const activeTab = ref<'problems' | 'review'>('problems')
 
 interface Problem {
   number: number

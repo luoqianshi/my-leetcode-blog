@@ -1,0 +1,6 @@
+{
+  "enabledPlugins": {
+    "superpowers@codebuddy-plugins-official": true,
+    "frontend-design-pro@codebuddy-plugins-official": true
+  }
+}
