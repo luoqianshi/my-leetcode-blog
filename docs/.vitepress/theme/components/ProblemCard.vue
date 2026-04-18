@@ -1,5 +1,5 @@
 <template>
-  <a :href="link" class="problem-card animate-fade-in-up" :style="{ animationDelay: `${index * 40}ms` }">
+  <a :href="withBase(link)" class="problem-card animate-fade-in-up" :style="{ animationDelay: `${index * 40}ms` }">
     <button
       class="star-btn"
       :class="{ starred }"
@@ -25,6 +25,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { withBase } from 'vitepress'
 
 const props = defineProps<{
   number: number
