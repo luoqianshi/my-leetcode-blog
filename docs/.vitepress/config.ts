@@ -10,7 +10,7 @@ export default withMermaid(
     description: 'LeetCode Hot 100 Python 题解个人知识库',
     head: [
       ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
-      ['meta', { name: 'theme-color', content: '#6366f1' }],
+      ['meta', { name: 'theme-color', content: '#ffffff' }],
       ['link', {
         rel: 'stylesheet',
         href: 'https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css'
@@ -26,7 +26,7 @@ export default withMermaid(
       }],
       ['link', {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap'
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap'
       }]
     ],
 
@@ -81,14 +81,19 @@ export default withMermaid(
         ],
         '/problems/': [
           {
-            text: '🟢 简单',
+            text: '简单',
             collapsed: false,
             items: [
               { text: '001. 两数之和', link: '/problems/001-two-sum' },
               { text: '020. 有效的括号', link: '/problems/020-valid-parentheses' },
               { text: '021. 合并两个有序链表', link: '/problems/021-merge-two-sorted-lists' },
               { text: '035. 搜索插入位置', link: '/problems/035-search-insert-position' },
+              { text: '070. 爬楼梯', link: '/problems/070-climbing-stairs' },
+              { text: '094. 二叉树的中序遍历', link: '/problems/094-binary-tree-inorder-traversal' },
+              { text: '101. 对称二叉树', link: '/problems/101-symmetric-tree' },
               { text: '104. 二叉树的最大深度', link: '/problems/104-maximum-depth-of-binary-tree' },
+              { text: '108. 将有序数组转换为二叉搜索树', link: '/problems/108-convert-sorted-array-to-binary-search-tree' },
+              { text: '118. 杨辉三角', link: '/problems/118-pascals-triangle' },
               { text: '121. 买卖股票的最佳时机', link: '/problems/121-best-time-to-buy-and-sell-stock' },
               { text: '136. 只出现一次的数字', link: '/problems/136-single-number' },
               { text: '141. 环形链表', link: '/problems/141-linked-list-cycle' },
@@ -96,12 +101,13 @@ export default withMermaid(
               { text: '169. 多数元素', link: '/problems/169-majority-element' },
               { text: '206. 反转链表', link: '/problems/206-reverse-linked-list' },
               { text: '226. 翻转二叉树', link: '/problems/226-invert-binary-tree' },
+              { text: '234. 回文链表', link: '/problems/234-palindrome-linked-list' },
               { text: '283. 移动零', link: '/problems/283-move-zeroes' },
-              { text: '461. 汉明距离', link: '/problems/461-hamming-distance' },
+              { text: '543. 二叉树的直径', link: '/problems/543-diameter-of-binary-tree' },
             ]
           },
           {
-            text: '🟠 中等',
+            text: '中等',
             collapsed: false,
             items: [
               { text: '002. 两数相加', link: '/problems/002-add-two-numbers' },
@@ -109,7 +115,11 @@ export default withMermaid(
               { text: '005. 最长回文子串', link: '/problems/005-longest-palindromic-substring' },
               { text: '011. 盛最多水的容器', link: '/problems/011-container-with-most-water' },
               { text: '015. 三数之和', link: '/problems/015-3sum' },
+              { text: '017. 电话号码的字母组合', link: '/problems/017-letter-combinations-of-a-phone-number' },
+              { text: '019. 删除链表的倒数第 N 个结点', link: '/problems/019-remove-nth-node-from-end-of-list' },
               { text: '022. 括号生成', link: '/problems/022-generate-parentheses' },
+              { text: '024. 两两交换链表中的节点', link: '/problems/024-swap-nodes-in-pairs' },
+              { text: '031. 下一个排列', link: '/problems/031-next-permutation' },
               { text: '033. 搜索旋转排序数组', link: '/problems/033-search-in-rotated-sorted-array' },
               { text: '034. 查找元素首末位置', link: '/problems/034-find-first-and-last-position-of-element-in-sorted-array' },
               { text: '039. 组合总和', link: '/problems/039-combination-sum' },
@@ -122,23 +132,26 @@ export default withMermaid(
               { text: '055. 跳跃游戏', link: '/problems/055-jump-game' },
               { text: '056. 合并区间', link: '/problems/056-merge-intervals' },
               { text: '062. 不同路径', link: '/problems/062-unique-paths' },
-              { text: '070. 爬楼梯', link: '/problems/070-climbing-stairs' },
+              { text: '064. 最小路径和', link: '/problems/064-minimum-path-sum' },
               { text: '072. 编辑距离', link: '/problems/072-edit-distance' },
               { text: '073. 矩阵置零', link: '/problems/073-set-matrix-zeroes' },
               { text: '074. 搜索二维矩阵', link: '/problems/074-search-a-2d-matrix' },
+              { text: '075. 颜色分类', link: '/problems/075-sort-colors' },
               { text: '078. 子集', link: '/problems/078-subsets' },
               { text: '079. 单词搜索', link: '/problems/079-word-search' },
-              { text: '094. 二叉树的中序遍历', link: '/problems/094-binary-tree-inorder-traversal' },
               { text: '098. 验证二叉搜索树', link: '/problems/098-validate-binary-search-tree' },
               { text: '102. 二叉树的层序遍历', link: '/problems/102-binary-tree-level-order-traversal' },
               { text: '105. 构造二叉树', link: '/problems/105-construct-binary-tree-from-preorder-and-inorder-traversal' },
               { text: '114. 二叉树展开为链表', link: '/problems/114-flatten-binary-tree-to-linked-list' },
               { text: '128. 最长连续序列', link: '/problems/128-longest-consecutive-sequence' },
+              { text: '131. 分割回文串', link: '/problems/131-palindrome-partitioning' },
+              { text: '138. 随机链表的复制', link: '/problems/138-copy-list-with-random-pointer' },
               { text: '139. 单词拆分', link: '/problems/139-word-break' },
               { text: '142. 环形链表 II', link: '/problems/142-linked-list-cycle-ii' },
               { text: '146. LRU 缓存', link: '/problems/146-lru-cache' },
               { text: '148. 排序链表', link: '/problems/148-sort-list' },
               { text: '152. 乘积最大子数组', link: '/problems/152-maximum-product-subarray' },
+              { text: '153. 寻找旋转排序数组中的最小值', link: '/problems/153-find-minimum-in-rotated-sorted-array' },
               { text: '155. 最小栈', link: '/problems/155-min-stack' },
               { text: '189. 轮转数组', link: '/problems/189-rotate-array' },
               { text: '198. 打家劫舍', link: '/problems/198-house-robber' },
@@ -152,6 +165,7 @@ export default withMermaid(
               { text: '238. 除自身以外数组的乘积', link: '/problems/238-product-of-array-except-self' },
               { text: '240. 搜索二维矩阵 II', link: '/problems/240-search-a-2d-matrix-ii' },
               { text: '279. 完全平方数', link: '/problems/279-perfect-squares' },
+              { text: '287. 寻找重复数', link: '/problems/287-find-the-duplicate-number' },
               { text: '300. 最长递增子序列', link: '/problems/300-longest-increasing-subsequence' },
               { text: '322. 零钱兑换', link: '/problems/322-coin-change' },
               { text: '347. 前 K 个高频元素', link: '/problems/347-top-k-frequent-elements' },
@@ -160,18 +174,28 @@ export default withMermaid(
               { text: '437. 路径总和 III', link: '/problems/437-path-sum-iii' },
               { text: '438. 字母异位词', link: '/problems/438-find-all-anagrams-in-a-string' },
               { text: '560. 和为 K 的子数组', link: '/problems/560-subarray-sum-equals-k' },
+              { text: '739. 每日温度', link: '/problems/739-daily-temperatures' },
               { text: '763. 划分字母区间', link: '/problems/763-partition-labels' },
               { text: '994. 腐烂的橘子', link: '/problems/994-rotting-oranges' },
               { text: '1143. 最长公共子序列', link: '/problems/1143-longest-common-subsequence' },
             ]
           },
           {
-            text: '🔴 困难',
+            text: '困难',
             collapsed: false,
             items: [
+              { text: '004. 寻找两个正序数组的中位数', link: '/problems/004-median-of-two-sorted-arrays' },
               { text: '023. 合并 K 个升序链表', link: '/problems/023-merge-k-sorted-lists' },
+              { text: '025. K 个一组翻转链表', link: '/problems/025-reverse-nodes-in-k-group' },
               { text: '032. 最长有效括号', link: '/problems/032-longest-valid-parentheses' },
+              { text: '041. 缺失的第一个正数', link: '/problems/041-first-missing-positive' },
+              { text: '042. 接雨水', link: '/problems/042-trapping-rain-water' },
+              { text: '051. N 皇后', link: '/problems/051-n-queens' },
               { text: '076. 最小覆盖子串', link: '/problems/076-minimum-window-substring' },
+              { text: '084. 柱状图中最大的矩形', link: '/problems/084-largest-rectangle-in-histogram' },
+              { text: '124. 二叉树中的最大路径和', link: '/problems/124-binary-tree-maximum-path-sum' },
+              { text: '239. 滑动窗口最大值', link: '/problems/239-sliding-window-maximum' },
+              { text: '295. 数据流的中位数', link: '/problems/295-find-median-from-data-stream' },
             ]
           }
         ]

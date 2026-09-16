@@ -8,8 +8,9 @@
           :title="isDark ? '切换到亮色模式' : '切换到暗色模式'"
           aria-label="切换明暗模式"
         >
-          <span v-if="isDark" class="icon">☀️</span>
-          <span v-else class="icon">🌙</span>
+          <span class="theme-icon" :class="{ 'icon-enter': isDark }">
+            <LcIcon :name="isDark ? 'sun' : 'moon'" :size="17" />
+          </span>
         </button>
       </div>
     </template>
@@ -17,27 +18,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import DefaultTheme from 'vitepress/theme'
 import { useData } from 'vitepress'
+import LcIcon from './components/icons/LcIcon.vue'
 
 const { isDark } = useData()
 
+// 与 VitePress 原生机制对齐：html.dark class + 约定存储键
+const STORAGE_KEY = 'vitepress-theme-appearance'
+
+function applyTheme(dark: boolean) {
+  document.documentElement.classList.toggle('dark', dark)
+  localStorage.setItem(STORAGE_KEY, dark ? 'dark' : 'light')
+}
+
 function toggleTheme() {
-  const html = document.documentElement
-  const current = html.getAttribute('data-theme')
-  const next = current === 'dark' ? 'light' : 'dark'
-  html.setAttribute('data-theme', next)
-  localStorage.setItem('theme', next)
+  applyTheme(!isDark.value)
 }
 
 onMounted(() => {
-  const saved = localStorage.getItem('theme')
-  if (saved) {
-    document.documentElement.setAttribute('data-theme', saved)
+  const saved = localStorage.getItem(STORAGE_KEY)
+  if (saved === 'dark' || saved === 'light') {
+    applyTheme(saved === 'dark')
   } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.setAttribute('data-theme', 'dark')
+    applyTheme(true)
   }
+})
+
+// 外部变化（如系统偏好回退）时保持同步
+watch(isDark, (dark) => {
+  document.documentElement.classList.toggle('dark', dark)
 })
 </script>
 
@@ -53,24 +64,51 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 8px;
-  background: var(--vp-c-bg);
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--lc-border);
+  border-radius: 999px;
+  background: var(--lc-bg);
+  color: var(--lc-ink);
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: border-color 0.2s var(--lc-ease), box-shadow 0.2s var(--lc-ease),
+    transform 0.2s var(--lc-ease);
+  box-shadow: var(--lc-shadow-sm);
 }
 
 .theme-toggle-btn:hover {
-  border-color: var(--vp-c-brand);
+  border-color: var(--lc-border-strong);
+  box-shadow: var(--lc-shadow-md);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-.icon {
-  font-size: 18px;
-  line-height: 1;
+.theme-toggle-btn:active {
+  transform: scale(0.94);
+}
+
+.theme-icon {
+  display: inline-flex;
+  animation: iconIn 0.3s var(--lc-ease);
+}
+
+@keyframes iconIn {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-icon {
+    animation: none;
+  }
+
+  .theme-toggle-btn {
+    transition: none;
+  }
 }
 </style>
