@@ -9,7 +9,7 @@ export default withMermaid(
     title: 'LeetCode Hot 100 题解',
     description: 'LeetCode Hot 100 Python 题解个人知识库',
     head: [
-      ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+      ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
       ['meta', { name: 'theme-color', content: '#ffffff' }],
       ['link', {
         rel: 'stylesheet',
