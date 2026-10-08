@@ -1,7 +1,10 @@
 <template>
   <div class="review-tab">
     <div class="review-map-section">
-      <h2 class="review-section-title">学习路径</h2>
+      <h2 class="review-section-title">
+        <LcIcon name="target" :size="18" />
+        学习路径
+      </h2>
       <p class="review-section-desc">按难度渐进排列，建议按顺序学习，前置知识为后续基础</p>
       <div class="learning-path-map">
         <div class="path-level path-level-beginner">
@@ -125,6 +128,7 @@
 import { computed } from 'vue'
 import { withBase } from 'vitepress'
 import ReviewCard from './ReviewCard.vue'
+import LcIcon from './icons/LcIcon.vue'
 
 interface ReviewModule {
   id: string
@@ -138,13 +142,12 @@ interface ReviewModule {
 
 const modules: ReviewModule[] = [
   {
-    id: '01', title: '位运算技巧', level: 'beginner', count: 3,
-    description: '位运算直接对整数的二进制位进行操作，覆盖异或消同、摩尔投票、Brian Kernighan 逐位消除三个核心技巧。',
+    id: '01', title: '位运算技巧', level: 'beginner', count: 2,
+    description: '位运算直接对整数的二进制位进行操作，覆盖异或消同、摩尔投票两个核心技巧。',
     link: '/review/01-bit-manipulation',
     problemLinks: [
       { number: 136, link: '/problems/136-single-number' },
       { number: 169, link: '/problems/169-majority-element' },
-      { number: 461, link: '/problems/461-hamming-distance' },
     ]
   },
   {

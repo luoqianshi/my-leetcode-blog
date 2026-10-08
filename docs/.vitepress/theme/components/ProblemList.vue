@@ -74,9 +74,12 @@
         />
       </div>
 
-      <div v-if="filteredProblems.length === 0" style="text-align: center; padding: 60px 20px; color: var(--vp-c-text-3);">
-        <p style="font-size: 48px; margin-bottom: 12px;">🔍</p>
-        <p style="font-size: 16px;">没有找到匹配的题目</p>
+      <div v-if="filteredProblems.length === 0" class="empty-state">
+        <span class="empty-state-icon">
+          <LcIcon name="search" :size="24" />
+        </span>
+        <p class="empty-state-title">没有找到匹配的题目</p>
+        <p class="empty-state-desc">试试调整筛选条件或更换关键词</p>
       </div>
     </div>
 
@@ -91,6 +94,7 @@ import { ref, computed, onMounted } from 'vue'
 import FilterBar from './FilterBar.vue'
 import ProblemCard from './ProblemCard.vue'
 import ReviewTab from './ReviewTab.vue'
+import LcIcon from './icons/LcIcon.vue'
 
 const activeTab = ref<'problems' | 'review'>('problems')
 
@@ -109,7 +113,6 @@ const problems = ref<Problem[]>([
   // ===== 位运算 =====
   { number: 136, title: '只出现一次的数字', difficulty: 'Easy', tags: ['位运算'], summary: '利用异或运算的自反性，将所有元素依次异或，出现两次的数会两两抵消为 0。', link: '/problems/136-single-number', starred: false },
   { number: 169, title: '多数元素', difficulty: 'Easy', tags: ['数组', 'Boyer-Moore 投票'], summary: 'Boyer-Moore 投票算法：维护候选者和计数器，不同则抵消，最终剩下的就是多数元素。', link: '/problems/169-majority-element', starred: false },
-  { number: 461, title: '汉明距离', difficulty: 'Easy', tags: ['位运算'], summary: '先异或标记不同位，再用 Brian Kernighan 算法统计 1 的个数。', link: '/problems/461-hamming-distance', starred: false },
 
   // ===== 哈希表 =====
   { number: 1, title: '两数之和', difficulty: 'Easy', tags: ['哈希表', '数组'], summary: '用哈希表存储已遍历的数，一次遍历即可找到互补对。', link: '/problems/001-two-sum', starred: false },
@@ -120,46 +123,56 @@ const problems = ref<Problem[]>([
   { number: 283, title: '移动零', difficulty: 'Easy', tags: ['数组', '双指针'], summary: '快慢指针：快指针探索非零元素，慢指针标记放置位置。', link: '/problems/283-move-zeroes', starred: false },
   { number: 11, title: '盛最多水的容器', difficulty: 'Medium', tags: ['贪心', '双指针'], summary: '对向双指针，贪心策略：移动较短的那端，才有可能增大盛水量。', link: '/problems/011-container-with-most-water', starred: false },
   { number: 15, title: '三数之和', difficulty: 'Medium', tags: ['数组', '双指针', '排序'], summary: '排序 + 双指针：固定一个数后，在其后子数组中用双指针查找两数之和。', link: '/problems/015-3sum', starred: false },
+  { number: 42, title: '接雨水', difficulty: 'Hard', tags: ['数组', '双指针'], summary: '对向双指针：位置 i 的水由两侧最大高度的较小者决定，移动较矮一侧可安全结算。', link: '/problems/042-trapping-rain-water', starred: false },
 
   // ===== 栈 =====
   { number: 20, title: '有效的括号', difficulty: 'Easy', tags: ['栈', '字符串'], summary: '遇到左括号入栈，遇到右括号检查栈顶是否配对，遍历结束栈为空则合法。', link: '/problems/020-valid-parentheses', starred: false },
   { number: 155, title: '最小栈', difficulty: 'Medium', tags: ['栈', '设计'], summary: '辅助栈同步记录最小值，只在更小值出现时才压入辅助栈。', link: '/problems/155-min-stack', starred: false },
+  { number: 739, title: '每日温度', difficulty: 'Medium', tags: ['栈', '单调栈'], summary: '单调递减栈：升温日到来时栈内所有更冷的日子同时结算，下一个更大元素模板。', link: '/problems/739-daily-temperatures', starred: false },
+  { number: 84, title: '柱状图中最大的矩形', difficulty: 'Hard', tags: ['栈', '单调栈'], summary: '单调递增栈：每根柱子出栈瞬间确定左右扩展边界，以它为高的最大矩形即刻结算。', link: '/problems/084-largest-rectangle-in-histogram', starred: false },
 
   // ===== 链表入门 =====
   { number: 160, title: '相交链表', difficulty: 'Easy', tags: ['链表', '双指针'], summary: '双指针消除长度差：走完一条链后切换到另一条，交点处相遇。', link: '/problems/160-intersection-of-two-linked-lists', starred: false },
   { number: 206, title: '反转链表', difficulty: 'Easy', tags: ['链表', '递归'], summary: '迭代法三指针：prev、curr、next，逐个反转指针方向。', link: '/problems/206-reverse-linked-list', starred: false },
   { number: 21, title: '合并两个有序链表', difficulty: 'Easy', tags: ['链表', '递归'], summary: '哑节点 + 尾指针，每次比较两链表头节点，将较小的接到尾部。', link: '/problems/021-merge-two-sorted-lists', starred: false },
   { number: 141, title: '环形链表', difficulty: 'Easy', tags: ['链表', '双指针'], summary: 'Floyd 快慢指针：快指针每次两步，慢指针每次一步，有环必相遇。', link: '/problems/141-linked-list-cycle', starred: false },
+  { number: 234, title: '回文链表', difficulty: 'Easy', tags: ['链表', '双指针'], summary: '快慢指针找中点 + 反转后半段 + 对撞比较，O(1) 空间判定回文。', link: '/problems/234-palindrome-linked-list', starred: false },
 
   // ===== 二叉树入门 =====
   { number: 226, title: '翻转二叉树', difficulty: 'Easy', tags: ['树', 'DFS', '分治'], summary: '递归交换每个节点的左右子树，分治思想的典型应用。', link: '/problems/226-invert-binary-tree', starred: false },
   { number: 104, title: '二叉树的最大深度', difficulty: 'Easy', tags: ['树', 'DFS', 'BFS'], summary: '递归：max(左子树深度, 右子树深度) + 1，空节点深度为 0。', link: '/problems/104-maximum-depth-of-binary-tree', starred: false },
   { number: 94, title: '二叉树的中序遍历', difficulty: 'Easy', tags: ['栈', '树', 'DFS'], summary: '迭代法：一路向左压栈，弹出栈顶访问，转向右子树。', link: '/problems/094-binary-tree-inorder-traversal', starred: false },
   { number: 102, title: '二叉树的层序遍历', difficulty: 'Medium', tags: ['树', 'BFS'], summary: 'BFS 队列逐层遍历，记录每层大小实现按层分组。', link: '/problems/102-binary-tree-level-order-traversal', starred: false },
+  { number: 101, title: '对称二叉树', difficulty: 'Easy', tags: ['树', 'DFS'], summary: '镜像递归：同时比较 (a.left, b.right) 与 (a.right, b.left)，两子树互为镜像。', link: '/problems/101-symmetric-tree', starred: false },
+  { number: 108, title: '将有序数组转换为二叉搜索树', difficulty: 'Easy', tags: ['树', '分治'], summary: '分治取中点做根，左半递归建左子树、右半建右子树，高度天然平衡。', link: '/problems/108-convert-sorted-array-to-binary-search-tree', starred: false },
 
   // ===== 滑动窗口 =====
   { number: 3, title: '无重复字符的最长子串', difficulty: 'Medium', tags: ['哈希表', '字符串', '滑动窗口'], summary: '跳跃式滑动窗口：右指针扩张，遇到重复时左指针直接跳到重复字符之后。', link: '/problems/003-longest-substring-without-repeating-characters', starred: false },
   { number: 438, title: '找到字符串中所有字母异位词', difficulty: 'Medium', tags: ['哈希表', '滑动窗口'], summary: '固定大小窗口滑动，用数组计数对比窗口与目标串的字符频率。', link: '/problems/438-find-all-anagrams-in-a-string', starred: false },
   { number: 76, title: '最小覆盖子串', difficulty: 'Hard', tags: ['哈希表', '滑动窗口'], summary: 'need/window 双字典 + valid 计数器，右扩左缩找最小满足条件的窗口。', link: '/problems/076-minimum-window-substring', starred: false },
+  { number: 239, title: '滑动窗口最大值', difficulty: 'Hard', tags: ['队列', '单调队列', '滑动窗口'], summary: '单调递减双端队列存下标：队首永远是窗口最大值，入队前弹出所有不大于新值的元素。', link: '/problems/239-sliding-window-maximum', starred: false },
 
   // ===== 数组进阶 =====
   { number: 53, title: '最大子数组和', difficulty: 'Medium', tags: ['数组', '动态规划'], summary: 'Kadane 算法：dp[i] = max(dp[i-1] + nums[i], nums[i])，负前缀不如重新开始。', link: '/problems/053-maximum-subarray', starred: false },
   { number: 56, title: '合并区间', difficulty: 'Medium', tags: ['数组', '排序'], summary: '按起点排序后线性扫描，重叠区间合并为取更大终点。', link: '/problems/056-merge-intervals', starred: false },
   { number: 238, title: '除自身以外数组的乘积', difficulty: 'Medium', tags: ['数组', '前缀积'], summary: '两次遍历：左到右记录左侧乘积，右到左乘上右侧乘积，空间 O(1)。', link: '/problems/238-product-of-array-except-self', starred: false },
   { number: 189, title: '轮转数组', difficulty: 'Medium', tags: ['数组'], summary: '三次翻转法：翻转全部 → 翻转前 k 个 → 翻转剩余部分。', link: '/problems/189-rotate-array', starred: false },
+  { number: 41, title: '缺失的第一个正数', difficulty: 'Hard', tags: ['数组', '哈希表'], summary: '原地哈希（置换法）：把值 v 交换到下标 v-1 处归位，再找第一个 nums[i] != i+1。', link: '/problems/041-first-missing-positive', starred: false },
 
   // ===== 二分查找 =====
   { number: 35, title: '搜索插入位置', difficulty: 'Easy', tags: ['数组', '二分查找'], summary: '标准二分查找，左闭右开区间，最终 left 即为插入位置。', link: '/problems/035-search-insert-position', starred: false },
   { number: 34, title: '在排序数组中查找元素的第一个和最后一个位置', difficulty: 'Medium', tags: ['数组', '二分查找'], summary: '两次二分：lower_bound 找第一个 ≥ target，upper_bound 找第一个 > target。', link: '/problems/034-find-first-and-last-position-of-element-in-sorted-array', starred: false },
   { number: 33, title: '搜索旋转排序数组', difficulty: 'Medium', tags: ['数组', '二分查找'], summary: '旋转数组仍满足"一半有序"，判断 mid 落在有序半边再确定 target 位置。', link: '/problems/033-search-in-rotated-sorted-array', starred: false },
   { number: 74, title: '搜索二维矩阵', difficulty: 'Medium', tags: ['数组', '二分查找', '矩阵'], summary: '降维映射：将二维矩阵视为一维有序数组，mid 对应 (mid//n, mid%n)。', link: '/problems/074-search-a-2d-matrix', starred: false },
+  { number: 153, title: '寻找旋转排序数组中的最小值', difficulty: 'Medium', tags: ['数组', '二分查找'], summary: '与右端点比较：nums[mid] > nums[right] 则最小值在右半段，否则收缩到含 mid 的左半段。', link: '/problems/153-find-minimum-in-rotated-sorted-array', starred: false },
+  { number: 4, title: '寻找两个正序数组的中位数', difficulty: 'Hard', tags: ['数组', '二分查找'], summary: '在较短数组上二分分割线位置，交叉不等式确定左右部分划分的合法性。', link: '/problems/004-median-of-two-sorted-arrays', starred: false },
 
   // ===== 字符串技巧 =====
   { number: 560, title: '和为 K 的子数组', difficulty: 'Medium', tags: ['数组', '哈希表', '前缀和'], summary: '前缀和 + 哈希表：pre[j] - pre[i] = k 等价于 pre[j] - k = pre[i]。', link: '/problems/560-subarray-sum-equals-k', starred: false },
   { number: 394, title: '字符串解码', difficulty: 'Medium', tags: ['栈', '字符串', '递归'], summary: '双栈法：数字栈管重复次数，字符串栈管层级，遇到 ] 弹出重建。', link: '/problems/394-decode-string', starred: false },
 
   // ===== 贪心 =====
-  { number: 121, title: '买卖股票的最佳时机', difficulty: 'Easy', tags: ['数组', '贪心'], summary: '维护历史最低价，每天计算当前价与最低价的差值取最大。', link: '/problems/121-best-time-to-buy-sell-stock', starred: false },
+  { number: 121, title: '买卖股票的最佳时机', difficulty: 'Easy', tags: ['数组', '贪心'], summary: '维护历史最低价，每天计算当前价与最低价的差值取最大。', link: '/problems/121-best-time-to-buy-and-sell-stock', starred: false },
   { number: 55, title: '跳跃游戏', difficulty: 'Medium', tags: ['贪心', '数组'], summary: '维护最远可达位置，遍历时若当前位置超过最远可达则无法继续。', link: '/problems/055-jump-game', starred: false },
   { number: 45, title: '跳跃游戏 II', difficulty: 'Medium', tags: ['贪心', '数组'], summary: '维护当前跳跃边界和最远可达，到达边界时必须跳一次。', link: '/problems/045-jump-game-ii', starred: false },
   { number: 763, title: '划分字母区间', difficulty: 'Medium', tags: ['贪心', '字符串'], summary: '先记录每个字母最后出现位置，贪心扩展直到覆盖片段内所有字符。', link: '/problems/763-partition-labels', starred: false },
@@ -170,13 +183,18 @@ const problems = ref<Problem[]>([
   { number: 39, title: '组合总和', difficulty: 'Medium', tags: ['回溯', '数组'], summary: '允许重复选同一元素（传 i 而非 i+1），remain < 0 提前返回剪枝。', link: '/problems/039-combination-sum', starred: false },
   { number: 22, title: '括号生成', difficulty: 'Medium', tags: ['回溯', '字符串'], summary: 'right < left 保证合法性：任何前缀中左括号数 ≥ 右括号数。', link: '/problems/022-generate-parentheses', starred: false },
   { number: 79, title: '单词搜索', difficulty: 'Medium', tags: ['回溯', '矩阵', 'DFS'], summary: 'DFS + 回溯：用 # 标记已访问，搜索完恢复，注意不回头（3个方向）。', link: '/problems/079-word-search', starred: false },
+  { number: 17, title: '电话号码的字母组合', difficulty: 'Medium', tags: ['回溯', '字符串'], summary: '乘积型回溯：每个数字一层选择树，枚举对应字母，path 长度等于 digits 长度时收集。', link: '/problems/017-letter-combinations-of-a-phone-number', starred: false },
+  { number: 131, title: '分割回文串', difficulty: 'Medium', tags: ['字符串', '回溯'], summary: '回溯切割 + 区间 DP 预处理回文表，判断 s[start..end] 是否回文降到 O(1)。', link: '/problems/131-palindrome-partitioning', starred: false },
+  { number: 51, title: 'N 皇后', difficulty: 'Hard', tags: ['回溯'], summary: '按行放置皇后，列、主对角线 r-c、副对角线 r+c 三个集合 O(1) 判重。', link: '/problems/051-n-queens', starred: false },
 
   // ===== 堆 =====
   { number: 215, title: '数组中的第 K 个最大元素', difficulty: 'Medium', tags: ['堆', '数组'], summary: '维护大小为 k 的最小堆，堆满后弹出最小值，最终堆顶即第 k 大。', link: '/problems/215-kth-largest-element-in-an-array', starred: false },
   { number: 347, title: '前 K 个高频元素', difficulty: 'Medium', tags: ['堆', '哈希表'], summary: 'Counter 统计频率 + 大小为 k 的最小堆，堆满后弹出频率最低的。', link: '/problems/347-top-k-frequent-elements', starred: false },
+  { number: 295, title: '数据流的中位数', difficulty: 'Hard', tags: ['堆', '设计'], summary: '双堆对半分：大顶堆存较小一半、小顶堆存较大一半，规模差 ≤ 1，堆顶读中位数。', link: '/problems/295-find-median-from-data-stream', starred: false },
 
   // ===== 一维动态规划 =====
   { number: 70, title: '爬楼梯', difficulty: 'Easy', tags: ['动态规划'], summary: '斐波那契数列：dp[i] = dp[i-1] + dp[i-2]，空间优化为两个变量。', link: '/problems/070-climbing-stairs', starred: false },
+  { number: 118, title: '杨辉三角', difficulty: 'Easy', tags: ['数组', '动态规划'], summary: '每一行由上一行推出：首尾补 1，中间元素为上一行相邻两数之和。', link: '/problems/118-pascals-triangle', starred: false },
   { number: 198, title: '打家劫舍', difficulty: 'Medium', tags: ['动态规划'], summary: 'dp[i] = max(dp[i-1], dp[i-2] + nums[i])，抢当前 vs 不抢当前。', link: '/problems/198-house-robber', starred: false },
   { number: 279, title: '完全平方数', difficulty: 'Medium', tags: ['动态规划', '完全背包'], summary: '完全背包变体：dp[i] = min(dp[i - j²] + 1)，完全平方数即物品。', link: '/problems/279-perfect-squares', starred: false },
   { number: 322, title: '零钱兑换', difficulty: 'Medium', tags: ['动态规划', '完全背包'], summary: 'dp[i] = min(dp[i - coin] + 1)，凑出金额 i 的最少硬币数。', link: '/problems/322-coin-change', starred: false },
@@ -188,6 +206,10 @@ const problems = ref<Problem[]>([
   { number: 23, title: '合并 K 个升序链表', difficulty: 'Hard', tags: ['链表', '堆', '分治'], summary: '最小堆：所有链表头节点入堆，每次弹出最小节点并将其 next 推入堆。', link: '/problems/023-merge-k-sorted-lists', starred: false },
   { number: 146, title: 'LRU 缓存', difficulty: 'Medium', tags: ['哈希表', '链表', '设计'], summary: '哈希表 + 双向链表 / OrderedDict，get 和 put 均 O(1)。', link: '/problems/146-lru-cache', starred: false },
   { number: 2, title: '两数相加', difficulty: 'Medium', tags: ['链表', '递归'], summary: '逐位相加维护进位，divmod 同时得到商和余数，注意最终进位。', link: '/problems/002-add-two-numbers', starred: false },
+  { number: 19, title: '删除链表的倒数第 N 个结点', difficulty: 'Medium', tags: ['链表', '双指针'], summary: '哑结点 + 快慢指针：fast 先走 n 步，同步前进后 slow 停在待删结点的前驱。', link: '/problems/019-remove-nth-node-from-end-of-list', starred: false },
+  { number: 24, title: '两两交换链表中的节点', difficulty: 'Medium', tags: ['链表'], summary: '哑结点 + 三步指针重连：每轮交换 first/second 后把 prev 推进到下一对。', link: '/problems/024-swap-nodes-in-pairs', starred: false },
+  { number: 25, title: 'K 个一组翻转链表', difficulty: 'Hard', tags: ['链表'], summary: '先统计长度，再逐段头插原地翻转，不足 k 个的尾部保持原序。', link: '/problems/025-reverse-nodes-in-k-group', starred: false },
+  { number: 138, title: '随机链表的复制', difficulty: 'Medium', tags: ['链表', '哈希表'], summary: '三步拼接：交错插入复制结点 → 复制 random 指针 → 拆分两链，O(1) 空间深拷贝。', link: '/problems/138-copy-list-with-random-pointer', starred: false },
 
   // ===== 图论 =====
   { number: 200, title: '岛屿数量', difficulty: 'Medium', tags: ['DFS', 'BFS', '矩阵'], summary: 'DFS/BFS 遍历连通块，遇到 1 时计数并将相连的 1 标记为已访问。', link: '/problems/200-number-of-islands', starred: false },
@@ -197,6 +219,7 @@ const problems = ref<Problem[]>([
 
   // ===== 多维动态规划 =====
   { number: 62, title: '不同路径', difficulty: 'Medium', tags: ['动态规划', '组合数学'], summary: 'dp[i][j] = dp[i-1][j] + dp[i][j-1]，空间优化为一维数组。', link: '/problems/062-unique-paths', starred: false },
+  { number: 64, title: '最小路径和', difficulty: 'Medium', tags: ['数组', '动态规划'], summary: 'dp[j] = min(上方, 左侧) + 当前格，一维滚动数组压缩空间。', link: '/problems/064-minimum-path-sum', starred: false },
   { number: 5, title: '最长回文子串', difficulty: 'Medium', tags: ['动态规划', '字符串'], summary: '中心扩展法：以每个字符和每对相邻字符为中心向两边扩展。', link: '/problems/005-longest-palindromic-substring', starred: false },
   { number: 1143, title: '最长公共子序列', difficulty: 'Medium', tags: ['动态规划', '字符串'], summary: 'dp[i][j]：字符匹配则 dp[i-1][j-1]+1，否则 max(dp[i-1][j], dp[i][j-1])。', link: '/problems/1143-longest-common-subsequence', starred: false },
   { number: 72, title: '编辑距离', difficulty: 'Medium', tags: ['动态规划', '字符串'], summary: 'dp[i][j] = min(删除/插入/替换)，三种操作对应三个子问题。', link: '/problems/072-edit-distance', starred: false },
@@ -209,6 +232,8 @@ const problems = ref<Problem[]>([
   { number: 105, title: '从前序与中序遍历序列构造二叉树', difficulty: 'Medium', tags: ['树', 'DFS', '数组'], summary: '前序首元素为根，中序找根位置划分左右子树，哈希表加速查找。', link: '/problems/105-construct-binary-tree-from-preorder-and-inorder-traversal', starred: false },
   { number: 437, title: '路径总和 III', difficulty: 'Medium', tags: ['树', 'DFS', '前缀和'], summary: '前缀和 + DFS：curr_sum - target 在哈希表中存在则存在合法路径。', link: '/problems/437-path-sum-iii', starred: false },
   { number: 236, title: '二叉树的最近公共祖先', difficulty: 'Medium', tags: ['树', 'DFS'], summary: '后序遍历：两边都找到则当前为 LCA，只一边找到则 LCA 在那一侧。', link: '/problems/236-lowest-common-ancestor-of-a-binary-tree', starred: false },
+  { number: 543, title: '二叉树的直径', difficulty: 'Easy', tags: ['树', 'DFS'], summary: 'DFS 求深度的途中，用 左深+右深 更新全局直径——拐弯可能在任意结点发生。', link: '/problems/543-diameter-of-binary-tree', starred: false },
+  { number: 124, title: '二叉树中的最大路径和', difficulty: 'Hard', tags: ['树', 'DFS', '动态规划'], summary: '后序遍历返回单边最大贡献，递归途中用 左贡献+根+右贡献 更新全局答案。', link: '/problems/124-binary-tree-maximum-path-sum', starred: false },
 
   // ===== 动态规划高级 =====
   { number: 152, title: '乘积最大子数组', difficulty: 'Medium', tags: ['动态规划', '数组'], summary: '同时维护最大乘积和最小乘积，遇负数时交换两者，应对负数翻转效应。', link: '/problems/152-maximum-product-subarray', starred: false },
@@ -221,6 +246,11 @@ const problems = ref<Problem[]>([
   { number: 54, title: '螺旋矩阵', difficulty: 'Medium', tags: ['矩阵', '数组'], summary: '四边界收缩法：右→下→左→上逐层遍历，注意边界合法性检查。', link: '/problems/054-spiral-matrix', starred: false },
   { number: 48, title: '旋转图像', difficulty: 'Medium', tags: ['矩阵', '数组'], summary: '顺时针 90° = 转置 + 水平翻转，原地操作 O(1) 空间。', link: '/problems/048-rotate-image', starred: false },
   { number: 240, title: '搜索二维矩阵 II', difficulty: 'Medium', tags: ['矩阵', '二分查找'], summary: '从右上角开始搜索，利用行列有序性每步排除一行或一列。', link: '/problems/240-search-a-2d-matrix-ii', starred: false },
+
+  // ===== 技巧 =====
+  { number: 31, title: '下一个排列', difficulty: 'Medium', tags: ['数组', '双指针'], summary: '从右找第一个降序点，再从右找刚大于它的数交换，最后反转后缀。', link: '/problems/031-next-permutation', starred: false },
+  { number: 75, title: '颜色分类', difficulty: 'Medium', tags: ['数组', '双指针'], summary: '三指针（荷兰国旗）：p0 收集 0、p2 收集 2，换到 p2 的数需原地重判。', link: '/problems/075-sort-colors', starred: false },
+  { number: 287, title: '寻找重复数', difficulty: 'Medium', tags: ['数组', '双指针'], summary: '把 nums[i] 看作函数指针，重复数即链表环入口，Floyd 快慢指针求解。', link: '/problems/287-find-the-duplicate-number', starred: false },
 ])
 
 // Load starred state from localStorage

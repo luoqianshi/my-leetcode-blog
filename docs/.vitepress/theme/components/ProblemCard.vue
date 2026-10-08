@@ -2,11 +2,12 @@
   <a :href="withBase(link)" class="problem-card animate-fade-in-up" :style="{ animationDelay: `${index * 40}ms` }">
     <button
       class="star-btn"
-      :class="{ starred }"
+      :class="{ starred, 'star-pop': starred }"
       @click.prevent="toggleStar"
       :title="starred ? '取消收藏' : '收藏此题'"
+      :aria-label="starred ? '取消收藏' : '收藏此题'"
     >
-      {{ starred ? '⭐' : '☆' }}
+      <LcIcon :key="starred" :name="starred ? 'star-filled' : 'star'" :size="18" />
     </button>
 
     <div class="problem-card-header">
@@ -26,6 +27,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { withBase } from 'vitepress'
+import LcIcon from './icons/LcIcon.vue'
 
 const props = defineProps<{
   number: number

@@ -25,14 +25,25 @@ date: 2024-01-01
 ## 代码实现
 
 ```python
-class Solution:
-    def climbStairs(self, n: int) -> int:
-        if n <= 2:
-            return n
-        a, b = 1, 2
-        for _ in range(3, n + 1):
-            a, b = b, a + b
-        return b
+class Solution(object):
+    def climbStairs(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        dp = {0:0}
+        # 模拟初始情况
+        # 直接爬1个台阶到位 共1种方法
+        dp[1] = 1
+        # 直接爬2个台阶到位 or 分两次爬1个台阶 共2种方法
+        dp[2] = 2
+
+        # 状态转移矩阵 dp[i] = dp[i-1] + dp[i-2]
+        # 因为n=i的方法数量等于n=i-1的方法数+n=i-2的方法数量
+        # 根据状态转移矩阵填充解空间
+        for i in range(3,n+1):
+            dp[i] = dp[i-1] + dp[i-2]
+        return dp[n]
 ```
 
 ## 复杂度分析

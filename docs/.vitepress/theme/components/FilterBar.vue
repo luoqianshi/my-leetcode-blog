@@ -1,12 +1,16 @@
 <template>
   <div class="filter-bar">
     <div class="filter-group">
+      <span
+        class="difficulty-dot"
+        :data-difficulty="selectedDifficulty === 'All' ? undefined : selectedDifficulty"
+      ></span>
       <span class="filter-label">难度</span>
       <select class="filter-select" v-model="selectedDifficulty" @change="emitFilters">
         <option value="All">全部</option>
-        <option value="Easy">🟢 简单</option>
-        <option value="Medium">🟠 中等</option>
-        <option value="Hard">🔴 困难</option>
+        <option value="Easy">简单</option>
+        <option value="Medium">中等</option>
+        <option value="Hard">困难</option>
       </select>
     </div>
 
@@ -23,7 +27,8 @@
       :class="{ active: starredOnly }"
       @click="toggleStarFilter"
     >
-      ⭐ 仅收藏
+      <LcIcon :name="starredOnly ? 'star-filled' : 'star'" :size="14" />
+      仅收藏
     </button>
 
     <input
@@ -37,7 +42,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
+import LcIcon from './icons/LcIcon.vue'
 
 const props = defineProps<{
   allTags: string[]
