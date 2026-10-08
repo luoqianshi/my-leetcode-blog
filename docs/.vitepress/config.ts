@@ -1,15 +1,21 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 
+const BASE = '/my-leetcode-blog/'
+
+// 与 VitePress 内置 check-dark-mode 同样的判定，保证首屏 favicon 就是对的
+const FAVICON_BOOTSTRAP = `(function(){var e=localStorage.getItem("vitepress-theme-appearance")||"auto",a=window.matchMedia("(prefers-color-scheme: dark)").matches,k=!e||e==="auto"?a:e==="dark",f=document.querySelector("link#favicon");if(f)f.href="${BASE}logo"+(k?"":"_light")+".svg"})()`
+
 export default withMermaid(
   defineConfig({
-    base: '/my-leetcode-blog/',
+    base: BASE,
     cleanUrls: true,
     lang: 'zh-CN',
     title: 'LeetCode Hot 100 题解',
     description: 'LeetCode Hot 100 Python 题解个人知识库',
     head: [
-      ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+      ['link', { rel: 'icon', id: 'favicon', type: 'image/svg+xml', href: `${BASE}logo_light.svg` }],
+      ['script', {}, FAVICON_BOOTSTRAP],
       ['meta', { name: 'theme-color', content: '#ffffff' }],
       ['link', {
         rel: 'stylesheet',
@@ -31,7 +37,10 @@ export default withMermaid(
     ],
 
     themeConfig: {
-      logo: '/logo.svg',
+      logo: {
+        light: '/logo_light.svg',
+        dark: '/logo.svg'
+      },
       nav: [
         { text: '首页', link: '/' },
         { text: '题目总览', link: '/problems/001-two-sum' },
