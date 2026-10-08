@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-label="LeetCode Hot 100">
+  <defs>
+    <!-- 白 → 卡其 的卡片底色 -->
+    <linearGradient id="lc-card" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.5" stop-color="#FAF4E9"/>
+      <stop offset="1" stop-color="#E4D3B2"/>
+    </linearGradient>
+    <!-- 斜杠的彩色渐变 -->
+    <linearGradient id="lc-slash" x1="35" y1="17" x2="29" y2="47" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F2994A"/>
+      <stop offset="1" stop-color="#7B5CE0"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#lc-card)"/>
+  <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="16.25" stroke="#B99C6B" stroke-opacity="0.35" stroke-width="1.5"/>
+  <g stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M23.5 21 12.5 32l11 11" stroke="#E0645A"/>
+    <path d="M40.5 21l11 11-11 11" stroke="#189A8C"/>
+    <path d="M35 17.5 29 46.5" stroke="url(#lc-slash)"/>
+  </g>
+</svg>
