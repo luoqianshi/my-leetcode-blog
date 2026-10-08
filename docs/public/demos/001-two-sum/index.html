@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>001. 两数之和 — 算法图解</title>
+<style>
+/* ============================================================
+   图解演示 — 设计令牌（单一真源）
+   与 docs/.vitepress/theme/styles/custom.css 第 8-116 行保持一致。
+   iframe 是独立 document，无法继承父页样式，故此处刻意重复。
+   改动 custom.css 的令牌后，需重跑 scripts/create-demo.mjs 同步。
+   ============================================================ */
+
+:root {
+  /* 色彩 — Cursor 浅色基调 */
+  --lc-bg: #ffffff;
+  --lc-bg-soft: #fafafa;
+  --lc-bg-mute: #f0f0f2;
+  --lc-ink: #0a0a0a;
+  --lc-text-2: #52525b;
+  --lc-text-3: #a1a1aa;
+  --lc-border: rgba(0, 0, 0, 0.08);
+  --lc-border-strong: rgba(0, 0, 0, 0.16);
+  --lc-accent: #4f46e5;
+  --lc-accent-soft: rgba(79, 70, 229, 0.08);
+
+  /* 难度语义色 */
+  --lc-green: #10b981;
+  --lc-green-bg: rgba(16, 185, 129, 0.1);
+  --lc-orange: #f59e0b;
+  --lc-orange-bg: rgba(245, 158, 11, 0.1);
+  --lc-red: #ef4444;
+  --lc-red-bg: rgba(239, 68, 68, 0.1);
+
+  /* 字体 */
+  --lc-font-sans: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --lc-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  /* 圆角 */
+  --lc-radius-sm: 6px;
+  --lc-radius-md: 10px;
+  --lc-radius-lg: 14px;
+  --lc-radius-pill: 999px;
+
+  /* 动效 */
+  --lc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --lc-ring: 0 0 0 3px rgba(79, 70, 229, 0.15);
+
+  /* demo 专属 —— 不与站点令牌冲突 */
+  --dm-cell: 46px;       /* 数组格子边长 */
+  --dm-node-r: 19px;     /* 树 / 链表节点半径 */
+  --dm-grid: 40px;       /* 网格单元格边长 */
+  --dm-dur: 260ms;       /* 过渡时长 */
+  --dm-stroke: 1.6;
+  --dm-stage-minw: 0px;  /* 窄屏时舞台横向滚动的触发宽度，由 archetype 覆盖 */
+}
+
+/* 注意：--lc-green / --lc-orange / --lc-red 三个主色在站点的 html.dark 里
+   同样没有被覆盖（只有 -bg 变体被覆盖），此处保持一致以免色偏。 */
+html.dark {
+  --lc-bg: #0a0a0a;
+  --lc-bg-soft: #131316;
+  --lc-bg-mute: #1f1f23;
+  --lc-ink: #fafafa;
+  --lc-text-2: #a1a1aa;
+  --lc-text-3: #6b6b74;
+  --lc-border: rgba(255, 255, 255, 0.1);
+  --lc-border-strong: rgba(255, 255, 255, 0.2);
+  --lc-accent: #818cf8;
+  --lc-accent-soft: rgba(129, 140, 248, 0.12);
+  --lc-green-bg: rgba(16, 185, 129, 0.15);
+  --lc-orange-bg: rgba(245, 158, 11, 0.15);
+  --lc-red-bg: rgba(239, 68, 68, 0.15);
+  --lc-ring: 0 0 0 3px rgba(129, 140, 248, 0.25);
+  --dm-stroke: 1.4;
+}
+
+/* ============================================================
+   外壳样式 —— 全部 archetype 共用
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* 🔴 height 必须是 auto。设成 100% / 100vh 会让父页设定 iframe 高度时
+      #app 跟着变高 → ResizeObserver 再触发 → 无限上报死循环。 */
+html, body { margin: 0; padding: 0; height: auto; }
+
+body {
+  background: var(--lc-bg);
+  color: var(--lc-ink);
+  font-family: var(--lc-font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app { height: auto; padding: 16px; }
+
+.demo-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.demo-title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+
+.stage {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px;
+  border: 1px solid var(--lc-border);
+  border-radius: var(--lc-radius-md);
+  background: var(--lc-bg-soft);
+}
+#svg { display: block; width: 100%; height: auto; min-width: var(--dm-stage-minw); }
+
+.caption {
+  margin: 12px 2px 0;
+  min-height: 3.2em;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--lc-text-2);
+}
+
+.bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  min-width: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--lc-border);
+  border-radius: var(--lc-radius-sm);
+  background: var(--lc-bg);
+  color: var(--lc-ink);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 140ms var(--lc-ease), background 140ms var(--lc-ease), opacity 140ms var(--lc-ease);
+}
+.btn:hover:not(:disabled) { border-color: var(--lc-border-strong); background: var(--lc-bg-soft); }
+.btn:focus-visible { outline: none; box-shadow: var(--lc-ring); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn svg { display: block; }
+
+.btn-primary {
+  min-width: 64px;
+  background: var(--lc-ink);
+  border-color: var(--lc-ink);
+  color: var(--lc-bg);
+}
+.btn-primary:hover:not(:disabled) { background: var(--lc-text-2); border-color: var(--lc-text-2); }
+
+.scrub {
+  flex: 1 1 120px;
+  min-width: 90px;
+  height: 30px;
+  margin: 0;
+  accent-color: var(--lc-accent);
+  cursor: pointer;
+}
+.scrub:focus-visible { outline: none; box-shadow: var(--lc-ring); border-radius: var(--lc-radius-sm); }
+
+.count {
+  font-family: var(--lc-font-mono);
+  font-size: 11px;
+  color: var(--lc-text-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.demo-foot { margin: 10px 2px 0; font-size: 11px; color: var(--lc-text-3); }
+
+/* ---------- SVG 共享视觉词汇（archetype 只补充自己特有的类） ---------- */
+
+#svg text { font-family: var(--lc-font-mono); font-variant-numeric: tabular-nums; }
+
+.lbl { font-size: 12px; fill: var(--lc-text-2); }
+.lbl-strong { font-size: 12px; font-weight: 600; fill: var(--lc-ink); }
+.lbl-dim { font-size: 11px; fill: var(--lc-text-3); }
+
+.cell { fill: var(--lc-bg); stroke: var(--lc-border-strong); stroke-width: var(--dm-stroke); }
+.cell-done { fill: var(--lc-bg-mute); stroke: var(--lc-border); }
+.cell-active { fill: var(--lc-accent-soft); stroke: var(--lc-accent); }
+.cell-hit { fill: var(--lc-green-bg); stroke: var(--lc-green); }
+.cell-val { font-size: 15px; font-weight: 600; fill: var(--lc-ink); text-anchor: middle; }
+.cell-idx { font-size: 10px; fill: var(--lc-text-3); text-anchor: middle; }
+
+.node { fill: var(--lc-bg); stroke: var(--lc-border-strong); stroke-width: var(--dm-stroke); }
+.node-active { fill: var(--lc-accent-soft); stroke: var(--lc-accent); }
+.node-done { fill: var(--lc-green-bg); stroke: var(--lc-green); }
+.node-dim { opacity: 0.3; }
+.node-val { font-size: 14px; font-weight: 600; fill: var(--lc-ink); text-anchor: middle; }
+
+.edge { fill: none; stroke: var(--lc-border-strong); stroke-width: var(--dm-stroke); }
+.edge-active { stroke: var(--lc-accent); }
+.edge-done { stroke: var(--lc-green); }
+
+.ptr-arrow { fill: var(--lc-accent); }
+.ptr-label { font-size: 11px; font-weight: 600; fill: var(--lc-accent); text-anchor: middle; }
+.ptr-prev .ptr-arrow, .ptr-prev .ptr-label { fill: var(--lc-green); }
+.ptr-next .ptr-arrow, .ptr-next .ptr-label { fill: var(--lc-orange); }
+
+.chip-bg { fill: var(--lc-bg-mute); stroke: var(--lc-border); stroke-width: 1; }
+.chip-tx { font-size: 11px; fill: var(--lc-text-2); text-anchor: middle; }
+.chip-new .chip-bg { fill: var(--lc-accent-soft); stroke: var(--lc-accent); }
+.chip-new .chip-tx { fill: var(--lc-accent); font-weight: 600; }
+
+.badge-bg { fill: var(--lc-green-bg); stroke: var(--lc-green); stroke-width: 1; }
+.badge-tx { font-size: 10px; font-weight: 600; fill: var(--lc-green); text-anchor: middle; }
+
+.panel-bg { fill: var(--lc-bg); stroke: var(--lc-border); stroke-width: 1; }
+.panel-title { font-size: 10px; font-weight: 600; fill: var(--lc-text-3); letter-spacing: 0.04em; }
+
+/* 只用 opacity 做入场脉冲：CSS transform 会覆盖 SVG 的 transform 属性，
+   而定位恰恰依赖该属性，所以这里绝不动 transform。 */
+@keyframes dm-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.chip-new { animation: dm-fade-in 320ms var(--lc-ease); }
+
+@media (max-width: 640px) {
+  #app { padding: 12px; }
+  .demo-foot { display: none; }
+  .count { display: none; }
+}
+
+.no-motion *, .no-motion *::before, .no-motion *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+
+</style>
+<script>
+/* 主题引导：首次绘制前同步执行，消除暗色闪烁。
+   嵌入站点时与父页同源 → 读到的就是父站偏好；
+   双击 file:// 离线打开时 → Chrome 会对 localStorage 抛 SecurityError，
+   此时必须退化为系统 prefers-color-scheme，所以两个取值分开 try。
+   判定顺序与 docs/.vitepress/config.ts 的 FAVICON_BOOTSTRAP 等价。 */
+(function () {
+  var dark = false;
+  try { dark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (_) {}
+  try {
+    var e = localStorage.getItem('vitepress-theme-appearance');
+    if (e === 'dark') dark = true;
+    else if (e === 'light') dark = false;
+    /* null / 'auto' → 沿用系统偏好 */
+  } catch (_) { /* file:// 下拿不到 localStorage，沿用系统偏好 */ }
+  if (dark) document.documentElement.classList.add('dark');
+})();
+</script>
+</head>
+<body>
+<div id="app">
+  <div class="demo" data-slug="001-two-sum">
+
+    <header class="demo-head">
+      <span class="demo-title">001. 两数之和</span>
+    </header>
+
+    <div class="stage" id="stage">
+      <svg id="svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="001. 两数之和 算法分步动画"></svg>
+    </div>
+
+    <p class="caption" id="caption" aria-live="polite"></p>
+
+    <div class="bar" role="group" aria-label="播放控制">
+      <button id="btn-reset" class="btn" type="button" title="重置 (R)" aria-label="重置">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path>
+        </svg>
+      </button>
+      <button id="btn-prev" class="btn" type="button" title="上一步 (←)" aria-label="上一步">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <button id="btn-play" class="btn btn-primary" type="button" title="播放 / 暂停 (空格)" aria-label="播放">播放</button>
+      <button id="btn-next" class="btn" type="button" title="下一步 (→)" aria-label="下一步">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 18l6-6-6-6"></path>
+        </svg>
+      </button>
+      <input id="scrub" class="scrub" type="range" min="0" max="0" step="1" value="0" aria-label="播放进度">
+      <span id="count" class="count"></span>
+      <button id="btn-speed" class="btn" type="button" title="播放速度" aria-label="播放速度">1×</button>
+    </div>
+
+    <p class="demo-foot">快捷键：← / → 单步，空格 播放暂停，R 重置</p>
+  </div>
+</div>
+
+<script>
+/* ⚠️ 不能写 type="module"：Chrome 会以 CORS 为由拒绝执行 file:// 上的 ES 模块，
+      双击离线打开直接白屏。必须是经典内联脚本，且不含 import / 外部 src / fetch。 */
+(function () {
+  'use strict';
+  var SLUG = '001-two-sum';
+
+/* ============================================================
+   archetype: array-hash
+   参考实现 = 001. 两数之和（LeetCode 示例 2：nums=[3,2,4], target=6 → [1,2]）
+
+   这是「数组条 + 滑动指针 + 侧栏面板」家族的样板；双指针 / 滑动窗口 /
+   二分 / 栈 / 哈希 等约 39 题都从它改起。
+
+   ⚠️ 用法：脚手架把本文件内联进 docs/public/demos/<slug>/index.html 之后，
+   直接改**产物文件**里的 NUMS / buildSteps() / paint()。
+   不要改本模板 —— 它是样板，不是运行时依赖。
+   ============================================================ */
+
+var NUMS = [3, 2, 4];
+var TARGET = 6;
+var STAGE = { w: 620, h: 292, minW: 460 };
+
+var steps = [];
+
+function record(patch, caption) {
+  patch.caption = caption;
+  steps.push(patch);
+}
+
+function cloneSeen(o) {
+  var r = {};
+  for (var k in o) r[k] = o[k];
+  return r;
+}
+
+/* ---------- 录制：真跑一遍算法，每步存一份纯数据快照 ----------
+   🔴 seen 必须每次拷贝。直接存引用的话所有步骤会指向同一个不断变化的对象，
+      动画就变成「每一步都显示最终态」。path / grid / nodes[].next 同理。 */
+function buildSteps() {
+  var seen = Object.create(null);   // 值 -> 下标
+
+  record({ phase: 'init', i: -1, need: null, seen: {}, hit: null },
+    '初始化：nums = [' + NUMS.join(', ') + ']，target = ' + TARGET + '，哈希表 seen 为空。');
+
+  for (var i = 0; i < NUMS.length; i++) {
+    var need = TARGET - NUMS[i];
+
+    record({ phase: 'lookup', i: i, need: need, seen: cloneSeen(seen), hit: null },
+      'i = ' + i + '，nums[' + i + '] = ' + NUMS[i] + '，去哈希表里找 complement = ' +
+      TARGET + ' − ' + NUMS[i] + ' = ' + need + '。');
+
+    if (need in seen) {
+      record({ phase: 'hit', i: i, need: need, seen: cloneSeen(seen), hit: [seen[need], i] },
+        '命中！' + need + ' 已经在表里（下标 ' + seen[need] + '），直接返回 [' +
+        seen[need] + ', ' + i + ']，无需继续遍历。');
+      return;
+    }
+
+    seen[NUMS[i]] = i;
+    record({ phase: 'store', i: i, need: need, seen: cloneSeen(seen), hit: null },
+      '表里没有 ' + need + '，把 { ' + NUMS[i] + ' → ' + i + ' } 存进去，指针右移。');
+  }
+
+  record({ phase: 'none', i: NUMS.length, need: null, seen: cloneSeen(seen), hit: null },
+    '遍历结束仍未找到配对，返回空数组。');
+}
+
+buildSteps();
+
+/* ---------- 渲染 ----------
+   🔴 绝不每步 innerHTML 重建 —— 那会杀掉所有 CSS transition，动画就没了。
+      用 keyed 元素缓存：首帧创建，之后只改 class / transform / textContent。
+      位移一律走 style.transform 而非重设 x 属性，transition 才会滑动。 */
+
+var NS = 'http://www.w3.org/2000/svg';
+var cache = Object.create(null);
+var ptrLabel = null;
+
+var CELL = 62, GAP = 16, Y0 = 50;
+var X0 = (STAGE.w - (NUMS.length * CELL + (NUMS.length - 1) * GAP)) / 2;
+var PTR_Y = Y0 + CELL + 24;
+var NEED_Y = 186;
+var SEEN_LBL_Y = 240;
+var CHIP_Y = 250, CHIP_W = 92, CHIP_H = 28, CHIP_GAP = 10;
+
+function cx(k) { return X0 + k * (CELL + GAP) + CELL / 2; }
+
+function ensure(key, tag) {
+  var e = cache[key];
+  if (!e) {
+    e = document.createElementNS(NS, tag);
+    e.style.transition = 'transform var(--dm-dur) var(--lc-ease),' +
+      ' opacity var(--dm-dur) var(--lc-ease),' +
+      ' fill var(--dm-dur) var(--lc-ease),' +
+      ' stroke var(--dm-dur) var(--lc-ease)';
+    cache[key] = e;
+    svg.appendChild(e);
+  }
+  return e;
+}
+
+function attr(e, o) { for (var k in o) e.setAttribute(k, o[k]); }
+function txt(e, s) { if (e.textContent !== s) e.textContent = s; }
+
+/* 清掉上一步残留的动态元素（本题只有哈希 chip 会增删） */
+function reconcile(used) {
+  for (var k in cache) {
+    if (!used[k]) { cache[k].remove(); delete cache[k]; }
+  }
+}
+
+function paint(s) {
+  var used = Object.create(null);
+  var i, k, e;
+
+  /* target 药丸（右上角，静态） */
+  e = ensure('tgt-bg', 'rect'); used['tgt-bg'] = 1;
+  attr(e, { x: STAGE.w - 108, y: 12, width: 96, height: 24, rx: 12, class: 'chip-bg' });
+  e = ensure('tgt-tx', 'text'); used['tgt-tx'] = 1;
+  attr(e, { x: STAGE.w - 60, y: 28, class: 'chip-tx' });
+  txt(e, 'target = ' + TARGET);
+
+  /* 命中弧线（画在格子上方，与下方的指针分开，互不遮挡） */
+  e = ensure('arc', 'path'); used['arc'] = 1;
+  attr(e, { class: 'edge edge-done', 'stroke-dasharray': '4 3', fill: 'none' });
+  if (s.hit) {
+    var a = cx(s.hit[0]), b = cx(s.hit[1]), mid = (a + b) / 2;
+    attr(e, { d: 'M' + a + ' ' + Y0 + ' Q' + mid + ' ' + (Y0 - 34) + ' ' + b + ' ' + Y0 });
+    e.style.opacity = '1';
+  } else {
+    e.style.opacity = '0';
+  }
+
+  e = ensure('arc-tx', 'text'); used['arc-tx'] = 1;
+  attr(e, { x: STAGE.w / 2, y: 26, class: 'badge-tx' });
+  if (s.hit) { txt(e, '答案 [' + s.hit.join(', ') + ']'); e.style.opacity = '1'; }
+  else { txt(e, ''); e.style.opacity = '0'; }
+
+  /* 数组格子 */
+  for (k = 0; k < NUMS.length; k++) {
+    var x = X0 + k * (CELL + GAP);
+    var cls = 'cell';
+    if (s.hit && (s.hit[0] === k || s.hit[1] === k)) cls += ' cell-hit';
+    else if (s.i === k) cls += ' cell-active';
+    else if (k < s.i) cls += ' cell-done';
+
+    e = ensure('c' + k, 'rect'); used['c' + k] = 1;
+    attr(e, { x: x, y: Y0, width: CELL, height: CELL, rx: 10, class: cls });
+
+    e = ensure('v' + k, 'text'); used['v' + k] = 1;
+    attr(e, { x: x + CELL / 2, y: Y0 + CELL / 2 + 6, class: 'cell-val' });
+    txt(e, String(NUMS[k]));
+
+    e = ensure('d' + k, 'text'); used['d' + k] = 1;
+    attr(e, { x: x + CELL / 2, y: Y0 + CELL + 16, class: 'cell-idx' });
+    txt(e, String(k));
+  }
+
+  /* 指针 i */
+  e = ensure('ptr', 'g'); used['ptr'] = 1;
+  if (!ptrLabel) {
+    var arrow = document.createElementNS(NS, 'path');
+    attr(arrow, { d: 'M0 0 L-6 12 L6 12 Z', class: 'ptr-arrow' });
+    ptrLabel = document.createElementNS(NS, 'text');
+    attr(ptrLabel, { y: 28, class: 'ptr-label' });
+    e.appendChild(arrow);
+    e.appendChild(ptrLabel);
+  }
+  e.style.opacity = s.i < 0 ? '0' : '1';
+  e.style.transform = 'translate(' + cx(Math.max(s.i, 0)) + 'px,' + PTR_Y + 'px)';
+  txt(ptrLabel, 'i = ' + (s.i < 0 ? '—' : s.i));
+
+  /* need 计算气泡 */
+  var needLine;
+  if (s.phase === 'init') needLine = '哈希表为空，从 i = 0 开始遍历';
+  else if (s.need === null) needLine = '遍历结束，未找到配对';
+  else needLine = 'need = target − nums[' + s.i + '] = ' + TARGET + ' − ' + NUMS[s.i] + ' = ' + s.need;
+
+  e = ensure('need-bg', 'rect'); used['need-bg'] = 1;
+  attr(e, {
+    x: STAGE.w / 2 - 158, y: NEED_Y, width: 316, height: 26, rx: 13,
+    class: s.phase === 'hit' ? 'badge-bg' : 'chip-bg'
+  });
+  e = ensure('need-tx', 'text'); used['need-tx'] = 1;
+  attr(e, { x: STAGE.w / 2, y: NEED_Y + 17, class: s.phase === 'hit' ? 'badge-tx' : 'chip-tx' });
+  txt(e, needLine);
+
+  /* 哈希表面板 */
+  e = ensure('seen-lbl', 'text'); used['seen-lbl'] = 1;
+  attr(e, { x: X0, y: SEEN_LBL_Y, class: 'panel-title' });
+  txt(e, '哈希表 SEEN（值 → 下标）');
+
+  var keys = Object.keys(s.seen);
+  if (!keys.length) {
+    e = ensure('seen-empty', 'text'); used['seen-empty'] = 1;
+    attr(e, { x: X0, y: CHIP_Y + 19, class: 'lbl-dim' });
+    txt(e, '∅ 空');
+  }
+  for (var n = 0; n < keys.length; n++) {
+    var key = keys[n];
+    var ck = 'chip-' + key;
+    var isNew = s.phase === 'store' && Number(s.seen[key]) === s.i;
+    var isHitSrc = !!(s.hit && Number(s.seen[key]) === s.hit[0]);
+
+    var g = cache[ck];
+    if (!g) {
+      g = document.createElementNS(NS, 'g');
+      g.style.transition = 'transform var(--dm-dur) var(--lc-ease), opacity var(--dm-dur) var(--lc-ease)';
+      g.appendChild(document.createElementNS(NS, 'rect'));
+      g.appendChild(document.createElementNS(NS, 'text'));
+      cache[ck] = g;
+      svg.appendChild(g);
+    }
+    used[ck] = 1;
+
+    attr(g, {
+      class: 'chip' + (isNew ? ' chip-new' : ''),
+      transform: 'translate(' + (X0 + n * (CHIP_W + CHIP_GAP)) + ',' + CHIP_Y + ')'
+    });
+    attr(g.childNodes[0], {
+      width: CHIP_W, height: CHIP_H, rx: 14,
+      class: isHitSrc ? 'badge-bg' : 'chip-bg'
+    });
+    attr(g.childNodes[1], { x: CHIP_W / 2, y: 19, class: isHitSrc ? 'badge-tx' : 'chip-tx' });
+    txt(g.childNodes[1], key + ' → ' + s.seen[key]);
+  }
+
+  reconcile(used);
+}
+
+/* ============================================================
+   KERNEL —— 主题通信 + 播放控制 + 高度上报（全部 archetype 共用）
+
+   契约：ARCH 段必须提供
+     var steps            快照数组，每项含 phase / caption 及 archetype 专属字段
+     function paint(s)    渲染一帧快照
+   可选提供
+     var STAGE = { w, h, minW }   viewBox 尺寸；minW 为窄屏横向滚动触发宽度
+   ============================================================ */
+
+var CFG = (typeof STAGE !== 'undefined' && STAGE) ? STAGE : { w: 660, h: 300, minW: 0 };
+
+var app = document.getElementById('app');
+var svg = document.getElementById('svg');
+svg.setAttribute('viewBox', '0 0 ' + CFG.w + ' ' + CFG.h);
+if (CFG.minW) document.documentElement.style.setProperty('--dm-stage-minw', CFG.minW + 'px');
+
+var el = {
+  prev: document.getElementById('btn-prev'),
+  play: document.getElementById('btn-play'),
+  next: document.getElementById('btn-next'),
+  reset: document.getElementById('btn-reset'),
+  speed: document.getElementById('btn-speed'),
+  scrub: document.getElementById('scrub'),
+  count: document.getElementById('count'),
+  caption: document.getElementById('caption')
+};
+
+/* ---------- 与父页通信 ---------- */
+
+var MSG = 'lc-demo';
+
+/* 目标 origin：嵌入时从 referrer 取（精确投递）；file:// 下取不到就退回 '*'。
+   载荷只有主题名和像素高度，不含敏感信息。 */
+var PARENT_ORIGIN = (function () {
+  try { return new URL(document.referrer).origin || '*'; } catch (_) { return '*'; }
+})();
+
+function post(type, payload) {
+  if (window.parent === window) return;   // 双击离线打开时没有父窗口
+  var msg = { type: MSG + ':' + type };
+  for (var k in (payload || {})) msg[k] = payload[k];
+  try { window.parent.postMessage(msg, PARENT_ORIGIN); } catch (_) {}
+}
+
+/* ---------- 高度上报 ---------- */
+
+var lastH = 0;
+var rafId = 0;
+
+function reportHeight() {
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(function () {
+    rafId = 0;
+    var h = Math.ceil(app.getBoundingClientRect().height);
+    if (h > 0 && Math.abs(h - lastH) >= 1) {
+      lastH = h;
+      post('height', { height: h });
+    }
+  });
+}
+
+/* 🔴 只 observe #app。observe documentElement 或 body 会与父页设定的 iframe
+      高度互相触发，形成 ResizeObserver 死循环（页面卡顿 + 高度来回抖）。 */
+if ('ResizeObserver' in window) new ResizeObserver(reportHeight).observe(app);
+window.addEventListener('resize', reportHeight);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(reportHeight);
+
+/* ---------- 播放控制 ---------- */
+
+var BASE_MS = 900;
+var SPEEDS = [0.5, 1, 1.5, 2];
+var idx = 0;
+var playing = false;
+var speedIdx = 1;
+var timer = null;
+
+function lastIdx() { return steps.length - 1; }
+
+function go(n) {
+  idx = Math.max(0, Math.min(lastIdx(), n));
+  var s = steps[idx];
+  paint(s);
+  el.caption.textContent = s.caption;
+  el.caption.setAttribute('data-phase', s.phase);
+  el.scrub.value = String(idx);
+  el.count.textContent = '第 ' + (idx + 1) + ' / ' + steps.length + ' 步';
+  el.prev.disabled = idx === 0;
+  el.next.disabled = idx === lastIdx();
+  var label = playing ? '暂停' : (idx === lastIdx() ? '重播' : '播放');
+  el.play.textContent = label;
+  el.play.setAttribute('aria-label', label);
+  reportHeight();   // 旁白换行会改变高度
+}
+
+/* 用 setTimeout 递归而非 setInterval：变速能立刻生效，末尾自动停也精确。 */
+function schedule() {
+  clearTimeout(timer);
+  timer = setTimeout(tick, BASE_MS / SPEEDS[speedIdx]);
+}
+
+function tick() {
+  if (idx >= lastIdx()) { pause(); return; }
+  go(idx + 1);
+  if (!playing) return;
+  if (idx >= lastIdx()) pause();   // 到末步立即停，按钮马上变「重播」
+  else schedule();
+}
+
+function play() {
+  if (idx >= lastIdx()) go(0);   // 末步点播放 = 重播
+  playing = true;
+  go(idx);
+  schedule();
+}
+
+function pause() {
+  playing = false;
+  clearTimeout(timer);
+  go(idx);
+}
+
+function toggle() { if (playing) pause(); else play(); }
+
+function reset() { pause(); go(0); }
+
+function stepBy(d) {
+  if (playing) pause();
+  go(idx + d);
+}
+
+el.prev.addEventListener('click', function () { stepBy(-1); });
+el.next.addEventListener('click', function () { stepBy(1); });
+el.play.addEventListener('click', toggle);
+el.reset.addEventListener('click', reset);
+el.speed.addEventListener('click', function () {
+  speedIdx = (speedIdx + 1) % SPEEDS.length;
+  el.speed.textContent = SPEEDS[speedIdx] + '×';
+  if (playing) schedule();
+});
+el.scrub.addEventListener('input', function () {
+  if (playing) pause();
+  go(Number(el.scrub.value));
+});
+
+document.addEventListener('keydown', function (e) {
+  var t = e.target;
+  /* range 上的方向键要留给原生行为，否则进度条拖不动 */
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  switch (e.key) {
+    case 'ArrowRight': e.preventDefault(); stepBy(1); break;
+    case 'ArrowLeft': e.preventDefault(); stepBy(-1); break;
+    case ' ': e.preventDefault(); toggle(); break;
+    case 'Home': e.preventDefault(); if (playing) pause(); go(0); break;
+    case 'End': e.preventDefault(); if (playing) pause(); go(lastIdx()); break;
+    case 'r': case 'R': e.preventDefault(); reset(); break;
+  }
+});
+
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.documentElement.classList.add('no-motion');
+}
+
+/* ---------- 主题同步 ---------- */
+
+window.addEventListener('message', function (e) {
+  /* 与 origin 无关的强校验：来源窗口必须是自己的父窗口，且消息形状必须匹配 */
+  if (e.source !== window.parent) return;
+  var d = e.data;
+  if (!d || d.type !== MSG + ':theme') return;
+  document.documentElement.classList.toggle('dark', d.theme === 'dark');
+  reportHeight();
+});
+
+/* ---------- 启动 ---------- */
+
+/* 空步骤是 archetype 编写期的真实失误，直接崩会白屏且难定位，所以给一条明确提示。 */
+if (!steps.length) {
+  el.caption.textContent = '该演示尚未生成任何步骤，请检查 buildSteps()。';
+  el.count.textContent = '第 0 / 0 步';
+  el.prev.disabled = el.next.disabled = true;
+} else {
+  el.scrub.max = String(lastIdx());
+  /* 由 iframe 主动喊 ready，父页收到后才回发主题 —— 解决父页抢先 post 被丢掉的竞态。
+     必须放在 message 监听器挂好之后。 */
+  post('ready', { slug: SLUG, steps: steps.length });
+  go(0);
+  reportHeight();
+}
+})();
+</script>
+</body>
+</html>

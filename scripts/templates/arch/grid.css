@@ -1,0 +1,44 @@
+/* ============================================================
+   archetype: grid —— 二维网格补充样式
+
+   shell.html 的 .cell / .cell-done / .cell-active / .cell-hit 是「一维数组条」
+   的语汇，表达不了网格题最关键的三态区分：原生水 / 未访问陆地 / 已沉没陆地。
+   🔴 第三态必须存在 —— 200 题是**原地**把 grid[i][j] 改成 '0' 当 visited 的，
+      改完之后它在数据里和原生水一模一样，只有渲染层额外留一份 sunk 记录，
+      才能把「本来就是水」和「被这次 DFS 沉没的陆地」画成两种颜色。
+   这里只补充网格特有的类，颜色一律取 tokens.css 的语义色，不新增色值。
+   注意：本文件被注入在 shell 样式之后，同优先级下后者胜出，
+   所以 .g-* 可以直接覆盖 .cell 的 fill / stroke。
+   ============================================================ */
+
+/* 原生水 '0'：整体压暗，一眼看出「这块从来没参与过 DFS」 */
+.g-water { fill: var(--lc-bg-mute); stroke: var(--lc-border); }
+
+/* 未访问陆地 '1'：accent 淡底，等待被外层循环发现 */
+.g-land { fill: var(--lc-accent-soft); stroke: var(--lc-accent); }
+
+/* 已沉没陆地：数据上已是 '0'，但视觉上必须和原生水分开 */
+.g-sunk { fill: var(--lc-green-bg); stroke: var(--lc-green); }
+
+/* DFS 当前帧所在格：实心 accent。写在 .g-sunk 之后，所以覆盖它 */
+.g-cur { fill: var(--lc-accent); stroke: var(--lc-accent); }
+
+/* 格子文字复用 shell 的 .cell-val，这里只补两个明暗修饰 */
+.g-val-dim { fill: var(--lc-text-3); font-weight: 500; }
+.g-val-inv { fill: var(--lc-bg); }
+
+/* 扫描游标 / DFS 光环：位置一律由 style.transform 决定，
+   所以这里只描述外观，绝不写 transform（会覆盖掉 JS 设的平移）。 */
+.g-scan-ring { fill: none; stroke: var(--lc-orange); stroke-width: 2.4; }
+.g-dfs-ring { fill: none; stroke: var(--lc-accent); stroke-width: 2; stroke-dasharray: 5 4; }
+
+/* 右侧计数面板的大数字 */
+.g-count-num { font-size: 42px; font-weight: 700; fill: var(--lc-accent); }
+
+/* 四方向递归探针：左边是调用表达式，右边是这次调用的结局。
+   .g-probe-race 是本题最值得讲的一种结局 —— 该方向在压栈那一刻还是陆地，
+   但排在它前面的分支已经把它沉没了，所以轮到它时只能 return。用橙色点出来。 */
+.g-probe-dir { font-size: 11px; fill: var(--lc-text-2); }
+.g-probe-go { font-size: 11px; font-weight: 600; fill: var(--lc-accent); text-anchor: end; }
+.g-probe-race { font-size: 11px; font-weight: 600; fill: var(--lc-orange); text-anchor: end; }
+.g-probe-ret { font-size: 11px; fill: var(--lc-text-3); text-anchor: end; }

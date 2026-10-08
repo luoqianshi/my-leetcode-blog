@@ -49,6 +49,10 @@ class Solution:
         return count
 ```
 
+## 图解演示
+
+<ProblemDemo slug="200-number-of-islands" title="200. 岛屿数量" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(m×n)

@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{{TITLE}} — 算法图解</title>
+<style>
+/*__TOKENS__*/
+
+/* ============================================================
+   外壳样式 —— 全部 archetype 共用
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* 🔴 height 必须是 auto。设成 100% / 100vh 会让父页设定 iframe 高度时
+      #app 跟着变高 → ResizeObserver 再触发 → 无限上报死循环。 */
+html, body { margin: 0; padding: 0; height: auto; }
+
+body {
+  background: var(--lc-bg);
+  color: var(--lc-ink);
+  font-family: var(--lc-font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app { height: auto; padding: 16px; }
+
+.demo-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.demo-title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+
+.stage {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px;
+  border: 1px solid var(--lc-border);
+  border-radius: var(--lc-radius-md);
+  background: var(--lc-bg-soft);
+}
+#svg { display: block; width: 100%; height: auto; min-width: var(--dm-stage-minw); }
+
+.caption {
+  margin: 12px 2px 0;
+  min-height: 3.2em;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--lc-text-2);
+}
+
+.bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  min-width: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--lc-border);
+  border-radius: var(--lc-radius-sm);
+  background: var(--lc-bg);
+  color: var(--lc-ink);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 140ms var(--lc-ease), background 140ms var(--lc-ease), opacity 140ms var(--lc-ease);
+}
+.btn:hover:not(:disabled) { border-color: var(--lc-border-strong); background: var(--lc-bg-soft); }
+.btn:focus-visible { outline: none; box-shadow: var(--lc-ring); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn svg { display: block; }
+
+.btn-primary {
+  min-width: 64px;
+  background: var(--lc-ink);
+  border-color: var(--lc-ink);
+  color: var(--lc-bg);
+}
+.btn-primary:hover:not(:disabled) { background: var(--lc-text-2); border-color: var(--lc-text-2); }
+
+.scrub {
+  flex: 1 1 120px;
+  min-width: 90px;
+  height: 30px;
+  margin: 0;
+  accent-color: var(--lc-accent);
+  cursor: pointer;
+}
+.scrub:focus-visible { outline: none; box-shadow: var(--lc-ring); border-radius: var(--lc-radius-sm); }
+
+.count {
+  font-family: var(--lc-font-mono);
+  font-size: 11px;
+  color: var(--lc-text-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.demo-foot { margin: 10px 2px 0; font-size: 11px; color: var(--lc-text-3); }
+
+/* ---------- SVG 共享视觉词汇（archetype 只补充自己特有的类） ---------- */
+
+#svg text { font-family: var(--lc-font-mono); font-variant-numeric: tabular-nums; }
+
+.lbl { font-size: 12px; fill: var(--lc-text-2); }
+.lbl-strong { font-size: 12px; font-weight: 600; fill: var(--lc-ink); }
+.lbl-dim { font-size: 11px; fill: var(--lc-text-3); }
+
+.cell { fill: var(--lc-bg); stroke: var(--lc-border-strong); stroke-width: var(--dm-stroke); }
+.cell-done { fill: var(--lc-bg-mute); stroke: var(--lc-border); }
+.cell-active { fill: var(--lc-accent-soft); stroke: var(--lc-accent); }
+.cell-hit { fill: var(--lc-green-bg); stroke: var(--lc-green); }
+.cell-val { font-size: 15px; font-weight: 600; fill: var(--lc-ink); text-anchor: middle; }
+.cell-idx { font-size: 10px; fill: var(--lc-text-3); text-anchor: middle; }
+
+.node { fill: var(--lc-bg); stroke: var(--lc-border-strong); stroke-width: var(--dm-stroke); }
+.node-active { fill: var(--lc-accent-soft); stroke: var(--lc-accent); }
+.node-done { fill: var(--lc-green-bg); stroke: var(--lc-green); }
+.node-dim { opacity: 0.3; }
+.node-val { font-size: 14px; font-weight: 600; fill: var(--lc-ink); text-anchor: middle; }
+
+.edge { fill: none; stroke: var(--lc-border-strong); stroke-width: var(--dm-stroke); }
+.edge-active { stroke: var(--lc-accent); }
+.edge-done { stroke: var(--lc-green); }
+
+.ptr-arrow { fill: var(--lc-accent); }
+.ptr-label { font-size: 11px; font-weight: 600; fill: var(--lc-accent); text-anchor: middle; }
+.ptr-prev .ptr-arrow, .ptr-prev .ptr-label { fill: var(--lc-green); }
+.ptr-next .ptr-arrow, .ptr-next .ptr-label { fill: var(--lc-orange); }
+
+.chip-bg { fill: var(--lc-bg-mute); stroke: var(--lc-border); stroke-width: 1; }
+.chip-tx { font-size: 11px; fill: var(--lc-text-2); text-anchor: middle; }
+.chip-new .chip-bg { fill: var(--lc-accent-soft); stroke: var(--lc-accent); }
+.chip-new .chip-tx { fill: var(--lc-accent); font-weight: 600; }
+
+.badge-bg { fill: var(--lc-green-bg); stroke: var(--lc-green); stroke-width: 1; }
+.badge-tx { font-size: 10px; font-weight: 600; fill: var(--lc-green); text-anchor: middle; }
+
+.panel-bg { fill: var(--lc-bg); stroke: var(--lc-border); stroke-width: 1; }
+.panel-title { font-size: 10px; font-weight: 600; fill: var(--lc-text-3); letter-spacing: 0.04em; }
+
+/* 只用 opacity 做入场脉冲：CSS transform 会覆盖 SVG 的 transform 属性，
+   而定位恰恰依赖该属性，所以这里绝不动 transform。 */
+@keyframes dm-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.chip-new { animation: dm-fade-in 320ms var(--lc-ease); }
+
+@media (max-width: 640px) {
+  #app { padding: 12px; }
+  .demo-foot { display: none; }
+  .count { display: none; }
+}
+
+.no-motion *, .no-motion *::before, .no-motion *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/*__ARCH_CSS__*/
+</style>
+<script>
+/* 主题引导：首次绘制前同步执行，消除暗色闪烁。
+   嵌入站点时与父页同源 → 读到的就是父站偏好；
+   双击 file:// 离线打开时 → Chrome 会对 localStorage 抛 SecurityError，
+   此时必须退化为系统 prefers-color-scheme，所以两个取值分开 try。
+   判定顺序与 docs/.vitepress/config.ts 的 FAVICON_BOOTSTRAP 等价。 */
+(function () {
+  var dark = false;
+  try { dark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (_) {}
+  try {
+    var e = localStorage.getItem('vitepress-theme-appearance');
+    if (e === 'dark') dark = true;
+    else if (e === 'light') dark = false;
+    /* null / 'auto' → 沿用系统偏好 */
+  } catch (_) { /* file:// 下拿不到 localStorage，沿用系统偏好 */ }
+  if (dark) document.documentElement.classList.add('dark');
+})();
+</script>
+</head>
+<body>
+<div id="app">
+  <div class="demo" data-slug="{{SLUG}}">
+
+    <header class="demo-head">
+      <span class="demo-title">{{TITLE}}</span>
+    </header>
+
+    <div class="stage" id="stage">
+      <svg id="svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="{{TITLE}} 算法分步动画"></svg>
+    </div>
+
+    <p class="caption" id="caption" aria-live="polite"></p>
+
+    <div class="bar" role="group" aria-label="播放控制">
+      <button id="btn-reset" class="btn" type="button" title="重置 (R)" aria-label="重置">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path>
+        </svg>
+      </button>
+      <button id="btn-prev" class="btn" type="button" title="上一步 (←)" aria-label="上一步">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <button id="btn-play" class="btn btn-primary" type="button" title="播放 / 暂停 (空格)" aria-label="播放">播放</button>
+      <button id="btn-next" class="btn" type="button" title="下一步 (→)" aria-label="下一步">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 18l6-6-6-6"></path>
+        </svg>
+      </button>
+      <input id="scrub" class="scrub" type="range" min="0" max="0" step="1" value="0" aria-label="播放进度">
+      <span id="count" class="count"></span>
+      <button id="btn-speed" class="btn" type="button" title="播放速度" aria-label="播放速度">1×</button>
+    </div>
+
+    <p class="demo-foot">快捷键：← / → 单步，空格 播放暂停，R 重置</p>
+  </div>
+</div>
+
+<script>
+/* ⚠️ 不能写 type="module"：Chrome 会以 CORS 为由拒绝执行 file:// 上的 ES 模块，
+      双击离线打开直接白屏。必须是经典内联脚本，且不含 import / 外部 src / fetch。 */
+(function () {
+  'use strict';
+  var SLUG = '{{SLUG}}';
+
+/*__ARCH__*/
+
+/*__KERNEL__*/
+})();
+</script>
+</body>
+</html>

@@ -4,6 +4,9 @@
    ============================================================ */
 
 /* ===== 1. Design Tokens ===== */
+/* 下面这批 --lc-* 令牌在 scripts/templates/tokens.css 里有一份刻意重复的副本，
+   供 docs/public/demos/ 下的单文件图解演示使用（iframe 是独立 document，无法继承
+   本站样式，且要求零外部依赖）。改动这里的令牌后需重跑 create-demo.mjs 同步。 */
 
 :root {
   /* 色彩 — Cursor 浅色基调 */
@@ -932,6 +935,60 @@ h1, h2, h3, h4 {
 }
 .review-card:has(.badge-advanced)::before {
   background: linear-gradient(90deg, var(--lc-red), #f87171);
+}
+
+/* 图解演示 —— iframe 承载 docs/public/demos/<slug>/index.html */
+.problem-demo {
+  margin: 20px 0;
+}
+
+.problem-demo-host {
+  position: relative;
+  aspect-ratio: 16 / 9; /* 收到 iframe 上报的高度后被内联 height 覆盖 */
+  min-height: 200px;
+  overflow: hidden;
+  border: 1px solid var(--lc-border);
+  border-radius: var(--lc-radius-lg);
+  background: var(--lc-bg-soft);
+  transition: height 140ms var(--lc-ease);
+}
+
+.problem-demo-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+}
+
+.problem-demo-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--lc-text-3);
+  background: repeating-linear-gradient(45deg, var(--lc-bg-mute) 0 10px, transparent 10px 20px);
+}
+
+.problem-demo-cap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.problem-demo-open {
+  color: var(--lc-accent);
+  text-decoration: none;
+}
+
+.problem-demo-open:hover {
+  text-decoration: underline;
 }
 
 /* ===== 5. VitePress Chrome ===== */

@@ -5,6 +5,7 @@ import FilterBar from './components/FilterBar.vue'
 import ProblemList from './components/ProblemList.vue'
 import ReviewCard from './components/ReviewCard.vue'
 import ReviewTab from './components/ReviewTab.vue'
+import ProblemDemo from './components/ProblemDemo.vue'
 import './styles/custom.css'
 
 export default {
@@ -16,5 +17,6 @@ export default {
     app.component('ProblemList', ProblemList)
     app.component('ReviewCard', ReviewCard)
     app.component('ReviewTab', ReviewTab)
+    app.component('ProblemDemo', ProblemDemo)
   }
 }

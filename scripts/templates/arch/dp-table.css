@@ -1,0 +1,78 @@
+/* ============================================================
+   archetype: dp-table —— DP 表（柱状递推）专用样式
+   只补 shell.html 里没有的东西：柱子生长、槽位轨道、依赖箭头头部、
+   台阶示意。共用词汇（.edge / .edge-active / .edge-done / .chip-bg /
+   .badge-bg / .cell-idx / .lbl-dim / .panel-title）一律沿用外壳，不重复定义。
+   ============================================================ */
+
+/* 柱子填色单独开一套令牌：浅色底用深靛蓝，暗色底必须换成 --lc-accent 那一档
+   亮靛蓝 —— 直接写死 rgba(79,70,229,…) 的话在 #0a0a0a 上几乎看不见。
+   （--lc-orange / --lc-green 主色两版一致，故描边可以直接用令牌。） */
+:root {
+  --dm-dp-base-fill: rgba(245, 158, 11, 0.22);
+  --dm-dp-rec-fill: rgba(79, 70, 229, 0.20);
+  --dm-dp-write-fill: rgba(79, 70, 229, 0.38);
+  --dm-dp-ans-fill: rgba(16, 185, 129, 0.30);
+}
+
+html.dark {
+  --dm-dp-base-fill: rgba(245, 158, 11, 0.28);
+  --dm-dp-rec-fill: rgba(129, 140, 248, 0.26);
+  --dm-dp-write-fill: rgba(129, 140, 248, 0.44);
+  --dm-dp-ans-fill: rgba(16, 185, 129, 0.34);
+}
+
+/* 还没算出来的槽位：只留虚线轮廓。所有轨道都是满刻度高，顺带把
+   「柱高按最终值定标、不按当前最大值」这件事画在图上。 */
+.dp-track { fill: none; stroke: var(--lc-border-strong); stroke-width: 1; stroke-dasharray: 3 4; opacity: 0.5; }
+.dp-track-on { stroke: var(--lc-accent); stroke-dasharray: 5 4; opacity: 1; }
+
+/* 🔴 柱子生长走 scaleY，必须显式给 transform-box: fill-box + origin 100%：
+      SVG 元素的默认参考系是 viewBox（原点落在整块画布中心），少了这两行
+      柱子会从画面中间往两头长。transition 不在这里写 —— ensure() 已经用
+      内联样式统一挂上了，重复声明反而会被内联覆盖。 */
+.dp-bar {
+  stroke-width: 1.4;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.dp-bar-pending { fill: none; stroke: none; }
+.dp-bar-base { fill: var(--dm-dp-base-fill); stroke: var(--lc-orange); }
+.dp-bar-rec { fill: var(--dm-dp-rec-fill); stroke: var(--lc-accent); }
+.dp-bar-write { fill: var(--dm-dp-write-fill); stroke: var(--lc-accent); stroke-width: 2; }
+.dp-bar-ans { fill: var(--dm-dp-ans-fill); stroke: var(--lc-green); stroke-width: 2; }
+.dp-bar-read { stroke-width: 2.6; }
+
+/* 柱顶数值：矮柱子放柱子上方，高柱子放柱子内部（见 paint 里的 24px 阈值） */
+.dp-val { font-size: 13px; font-weight: 600; fill: var(--lc-ink); text-anchor: middle; }
+.dp-val-dim { font-size: 13px; fill: var(--lc-text-3); text-anchor: middle; }
+.dp-val-read { font-size: 13px; font-weight: 700; fill: var(--lc-accent); text-anchor: middle; }
+.dp-val-write { font-size: 13px; font-weight: 700; fill: var(--lc-accent); text-anchor: middle; }
+.dp-val-ans { font-size: 13px; font-weight: 700; fill: var(--lc-green); text-anchor: middle; }
+
+.dp-idx-on { fill: var(--lc-accent); font-weight: 600; }
+
+/* 等式读数：本题的数值主线，比 .chip-tx 大一号才压得住 */
+.dp-eq { font-size: 12px; font-weight: 600; fill: var(--lc-text-2); text-anchor: middle; }
+.dp-eq-done { fill: var(--lc-green); }
+
+.dp-axis { stroke: var(--lc-border-strong); stroke-width: 1.2; }
+
+/* 依赖箭头的头部（.edge 只负责线，不负责填充） */
+.dp-head { fill: var(--lc-accent); }
+.dp-head-done { fill: var(--lc-green); }
+
+/* 台阶示意：只是助记符，刻意做小；+2 那一跳用虚线，色弱也能分辨 */
+.dp-stair { fill: var(--lc-bg-mute); stroke: var(--lc-border-strong); stroke-width: 1.2; }
+.dp-stair-top { fill: none; stroke: var(--lc-accent); stroke-width: 2.4; stroke-linecap: round; }
+.dp-hop { fill: none; stroke: var(--lc-accent); stroke-width: 1.6; stroke-linecap: round; }
+.dp-hop-2 { stroke: var(--lc-orange); stroke-dasharray: 4 3; }
+.dp-hop-dot { fill: var(--lc-accent); }
+.dp-hop-tx { font-size: 9px; font-weight: 600; text-anchor: middle; }
+.dp-hop-tx-1 { fill: var(--lc-accent); }
+.dp-hop-tx-2 { fill: var(--lc-orange); }
+
+/* 图例小色块 */
+.dp-sw { stroke-width: 1.2; }
+.dp-sw-base { fill: var(--dm-dp-base-fill); stroke: var(--lc-orange); }
+.dp-sw-rec { fill: var(--dm-dp-rec-fill); stroke: var(--lc-accent); }

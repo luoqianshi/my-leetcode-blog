@@ -1,0 +1,71 @@
+/* ============================================================
+   图解演示 — 设计令牌（单一真源）
+   与 docs/.vitepress/theme/styles/custom.css 第 8-116 行保持一致。
+   iframe 是独立 document，无法继承父页样式，故此处刻意重复。
+   改动 custom.css 的令牌后，需重跑 scripts/create-demo.mjs 同步。
+   ============================================================ */
+
+:root {
+  /* 色彩 — Cursor 浅色基调 */
+  --lc-bg: #ffffff;
+  --lc-bg-soft: #fafafa;
+  --lc-bg-mute: #f0f0f2;
+  --lc-ink: #0a0a0a;
+  --lc-text-2: #52525b;
+  --lc-text-3: #a1a1aa;
+  --lc-border: rgba(0, 0, 0, 0.08);
+  --lc-border-strong: rgba(0, 0, 0, 0.16);
+  --lc-accent: #4f46e5;
+  --lc-accent-soft: rgba(79, 70, 229, 0.08);
+
+  /* 难度语义色 */
+  --lc-green: #10b981;
+  --lc-green-bg: rgba(16, 185, 129, 0.1);
+  --lc-orange: #f59e0b;
+  --lc-orange-bg: rgba(245, 158, 11, 0.1);
+  --lc-red: #ef4444;
+  --lc-red-bg: rgba(239, 68, 68, 0.1);
+
+  /* 字体 */
+  --lc-font-sans: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --lc-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  /* 圆角 */
+  --lc-radius-sm: 6px;
+  --lc-radius-md: 10px;
+  --lc-radius-lg: 14px;
+  --lc-radius-pill: 999px;
+
+  /* 动效 */
+  --lc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --lc-ring: 0 0 0 3px rgba(79, 70, 229, 0.15);
+
+  /* demo 专属 —— 不与站点令牌冲突 */
+  --dm-cell: 46px;       /* 数组格子边长 */
+  --dm-node-r: 19px;     /* 树 / 链表节点半径 */
+  --dm-grid: 40px;       /* 网格单元格边长 */
+  --dm-dur: 260ms;       /* 过渡时长 */
+  --dm-stroke: 1.6;
+  --dm-stage-minw: 0px;  /* 窄屏时舞台横向滚动的触发宽度，由 archetype 覆盖 */
+}
+
+/* 注意：--lc-green / --lc-orange / --lc-red 三个主色在站点的 html.dark 里
+   同样没有被覆盖（只有 -bg 变体被覆盖），此处保持一致以免色偏。 */
+html.dark {
+  --lc-bg: #0a0a0a;
+  --lc-bg-soft: #131316;
+  --lc-bg-mute: #1f1f23;
+  --lc-ink: #fafafa;
+  --lc-text-2: #a1a1aa;
+  --lc-text-3: #6b6b74;
+  --lc-border: rgba(255, 255, 255, 0.1);
+  --lc-border-strong: rgba(255, 255, 255, 0.2);
+  --lc-accent: #818cf8;
+  --lc-accent-soft: rgba(129, 140, 248, 0.12);
+  --lc-green-bg: rgba(16, 185, 129, 0.15);
+  --lc-orange-bg: rgba(245, 158, 11, 0.15);
+  --lc-red-bg: rgba(239, 68, 68, 0.15);
+  --lc-ring: 0 0 0 3px rgba(129, 140, 248, 0.25);
+  --dm-stroke: 1.4;
+}

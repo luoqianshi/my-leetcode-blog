@@ -46,6 +46,10 @@ class Solution(object):
         return dp[n]
 ```
 
+## 图解演示
+
+<ProblemDemo slug="070-climbing-stairs" title="070. 爬楼梯" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)
