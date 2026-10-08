@@ -1,0 +1,63 @@
+/* ============================================================
+   archetype: backtrack-tree —— 回溯递归树专用样式
+   只补 shell.html 里没有的东西：边标签的光晕、还没长出来的槽位、
+   切片拷贝的高亮框、used 盒子、面板分隔线。共用词汇（.node /
+   .node-active / .node-done / .node-dim / .node-val / .edge /
+   .edge-active / .edge-done / .chip-* / .badge-* / .panel-bg /
+   .panel-title / .lbl-dim）一律沿用外壳，不重复定义。
+   注意：transition 一律不在这里写 —— ensure() 已经用内联样式统一挂上了，
+   内联优先级更高，这里再声明只是白写。
+   ============================================================ */
+
+/* 在当前 path 上的节点：只加一圈 accent 描边，比 .node-active 弱一档 ——
+   填充色留给「此刻正站在上面的那一个节点」，两者才分得开。 */
+.bt-onpath { stroke: var(--lc-accent); }
+
+/* 🔴 .node-dim 只作用在圆圈上（外壳里就是 opacity: 0.3），节点里的数字
+      必须跟着一起淡，否则回溯完的子树会剩下一排孤零零的数字飘在画布上。 */
+.bt-val-dim { opacity: 0.3; }
+
+/* 边上「这一层选了哪个数」的标签：用底色描边做光晕把线挖断，
+   否则斜线会直接从数字中间穿过去。paint-order 让 stroke 画在 fill 之下。 */
+.bt-edge-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--lc-text-2);
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: var(--lc-bg-soft);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.bt-edge-lbl-on { fill: var(--lc-accent); }
+.bt-edge-lbl-done { fill: var(--lc-green); }
+
+/* 还没收集到的排列槽位：只留虚线轮廓。六个槽位从第一步就画满，
+   顺带把「一共会有 3! = 6 个排列」这件事先摆在图上。 */
+.bt-slot { fill: none; stroke: var(--lc-border-strong); stroke-width: 1; stroke-dasharray: 3 4; opacity: 0.55; }
+/* 刚被 pop 掉的那个 path 槽位：橙色虚线，把「撤销」发生的位置指出来 */
+.bt-slot-hot { stroke: var(--lc-orange); stroke-dasharray: 4 3; opacity: 1; }
+
+/* path 药丸里的数字是本题主角，比 .chip-tx 大一号才压得住 */
+.bt-path-tx { font-size: 15px; font-weight: 600; }
+
+/* used 盒子：底色 + 描边跟着 used[i] 走，√ / × 见 .bt-mark */
+.bt-used { fill: var(--lc-bg-mute); stroke: var(--lc-border); stroke-width: 1; }
+.bt-used-on { fill: var(--lc-green-bg); stroke: var(--lc-green); }
+.bt-used-val { font-size: 14px; font-weight: 600; fill: var(--lc-text-3); text-anchor: middle; }
+.bt-used-val-on { fill: var(--lc-green); }
+.bt-used-idx { font-size: 8.5px; fill: var(--lc-text-3); text-anchor: middle; }
+.bt-used-idx-on { fill: var(--lc-green); }
+
+/* 🔴 勾 / 叉刻意用 <path> 画而不是打字形：U+2713 / U+2717 在
+      JetBrains Mono → monospace 这条回退链上经常缺字，渲染出来是豆腐块。 */
+.bt-mark { fill: none; stroke: var(--lc-text-3); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.bt-mark-on { stroke: var(--lc-green); stroke-width: 2.2; }
+
+/* 切片拷贝：collect 那一步把 path 整段框起来，并给底部那行结论上色。
+   这条正是题解「解题思路」点名要讲的东西，不能只写在旁白里。 */
+.bt-copy-halo { fill: none; stroke: var(--lc-green); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.bt-copy-tag { font-size: 11px; font-weight: 700; fill: var(--lc-green); }
+.bt-note-on { fill: var(--lc-green); font-weight: 600; }
+
+.bt-rule { stroke: var(--lc-border); stroke-width: 1; }

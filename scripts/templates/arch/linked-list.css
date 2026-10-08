@@ -1,0 +1,37 @@
+/* ============================================================
+   archetype: linked-list —— 单链表补充样式
+
+   shell.html 的 .node / .edge / .ptr-* 已经把「节点、连线、指针」三件套的配色
+   定死了，这里只补链表特有、shell 里没有的三类东西：
+     1. null 端点 —— 它必须是看得见的实体，不能只是「箭头没画」。
+        prev = None 和 curr 走到头这两种状态都要有地方可以指。
+     2. 节点内部的 val | next 字段分隔线 + next 小圆点。
+     3. marker 箭头头部 —— marker 内容不吃 .edge 的 stroke，只能自己给 fill。
+   颜色一律取 tokens.css 的语义色，不新增色值。
+   注意：本文件被注入在 shell 样式之后，同优先级下后者胜出。
+   ============================================================ */
+
+/* null 端点：虚线胶囊，一眼区别于实心节点 */
+.ll-null {
+  fill: none;
+  stroke: var(--lc-border-strong);
+  stroke-width: var(--dm-stroke);
+  stroke-dasharray: 4 3;
+}
+/* 节点 0 回指过来之后，这个 null 就成了新链表尾巴的 next，跟着染绿 */
+.ll-null-hit { stroke: var(--lc-green); }
+.ll-null-tx { font-size: 11px; fill: var(--lc-text-3); text-anchor: middle; }
+
+/* 节点内部：val | next 的分隔线与 next 字段小圆点。
+   圆点变绿 = 这条 next 已经从「指向右边」翻成「指向左边」。 */
+.ll-field { stroke: var(--lc-border); stroke-width: 1; }
+.ll-dot { fill: var(--lc-border-strong); }
+.ll-dot-back { fill: var(--lc-green); }
+
+/* 箭头头部三色，与 .edge / .edge-active / .edge-done 的描边一一对应 */
+.ll-ah-dim { fill: var(--lc-border-strong); }
+.ll-ah-accent { fill: var(--lc-accent); }
+.ll-ah-done { fill: var(--lc-green); }
+
+/* 顶栏图例的两条迷你曲线，比线身粗一点才看得清是「拱起 / 下垂」 */
+.ll-lg { stroke-width: 2; }

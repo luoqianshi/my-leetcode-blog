@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>206. 反转链表 — 算法图解</title>
+<style>
+/* ============================================================
+   图解演示 — 设计令牌（单一真源）
+   与 docs/.vitepress/theme/styles/custom.css 第 8-116 行保持一致。
+   iframe 是独立 document，无法继承父页样式，故此处刻意重复。
+   改动 custom.css 的令牌后，需重跑 scripts/create-demo.mjs 同步。
+   ============================================================ */
+
+:root {
+  /* 色彩 — Cursor 浅色基调 */
+  --lc-bg: #ffffff;
+  --lc-bg-soft: #fafafa;
+  --lc-bg-mute: #f0f0f2;
+  --lc-ink: #0a0a0a;
+  --lc-text-2: #52525b;
+  --lc-text-3: #a1a1aa;
+  --lc-border: rgba(0, 0, 0, 0.08);
+  --lc-border-strong: rgba(0, 0, 0, 0.16);
+  --lc-accent: #4f46e5;
+  --lc-accent-soft: rgba(79, 70, 229, 0.08);
+
+  /* 难度语义色 */
+  --lc-green: #10b981;
+  --lc-green-bg: rgba(16, 185, 129, 0.1);
+  --lc-orange: #f59e0b;
+  --lc-orange-bg: rgba(245, 158, 11, 0.1);
+  --lc-red: #ef4444;
+  --lc-red-bg: rgba(239, 68, 68, 0.1);
+
+  /* 字体 */
+  --lc-font-sans: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --lc-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  /* 圆角 */
+  --lc-radius-sm: 6px;
+  --lc-radius-md: 10px;
+  --lc-radius-lg: 14px;
+  --lc-radius-pill: 999px;
+
+  /* 动效 */
+  --lc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --lc-ring: 0 0 0 3px rgba(79, 70, 229, 0.15);
+
+  /* demo 专属 —— 不与站点令牌冲突 */
+  --dm-cell: 46px;       /* 数组格子边长 */
+  --dm-node-r: 19px;     /* 树 / 链表节点半径 */
+  --dm-grid: 40px;       /* 网格单元格边长 */
+  --dm-dur: 260ms;       /* 过渡时长 */
+  --dm-stroke: 1.6;
+  --dm-stage-minw: 0px;  /* 窄屏时舞台横向滚动的触发宽度，由 archetype 覆盖 */
+}
+
+/* 注意：--lc-green / --lc-orange / --lc-red 三个主色在站点的 html.dark 里
+   同样没有被覆盖（只有 -bg 变体被覆盖），此处保持一致以免色偏。 */
+html.dark {
+  --lc-bg: #0a0a0a;
+  --lc-bg-soft: #131316;
+  --lc-bg-mute: #1f1f23;
+  --lc-ink: #fafafa;
+  --lc-text-2: #a1a1aa;
+  --lc-text-3: #6b6b74;
+  --lc-border: rgba(255, 255, 255, 0.1);
+  --lc-border-strong: rgba(255, 255, 255, 0.2);
+  --lc-accent: #818cf8;
+  --lc-accent-soft: rgba(129, 140, 248, 0.12);
+  --lc-green-bg: rgba(16, 185, 129, 0.15);
+  --lc-orange-bg: rgba(245, 158, 11, 0.15);
+  --lc-red-bg: rgba(239, 68, 68, 0.15);
+  --lc-ring: 0 0 0 3px rgba(129, 140, 248, 0.25);
+  --dm-stroke: 1.4;
+}
+
+/* ============================================================
+   外壳样式 —— 全部 archetype 共用
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* 🔴 height 必须是 auto。设成 100% / 100vh 会让父页设定 iframe 高度时
+      #app 跟着变高 → ResizeObserver 再触发 → 无限上报死循环。 */
+html, body { margin: 0; padding: 0; height: auto; }
+
+body {
+  background: var(--lc-bg);
+  color: var(--lc-ink);
+  font-family: var(--lc-font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app { height: auto; padding: 16px; }
+
+.demo-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.demo-title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+
+.stage {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px;
+  border: 1px solid var(--lc-border);
+  border-radius: var(--lc-radius-md);
+  background: var(--lc-bg-soft);
+}
+#svg { display: block; width: 100%; height: auto; min-width: var(--dm-stage-minw); }
+
+.caption {
+  margin: 12px 2px 0;
+  min-height: 3.2em;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--lc-text-2);
+}
+
+.bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  min-width: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--lc-border);
+  border-radius: var(--lc-radius-sm);
+  background: var(--lc-bg);
+  color: var(--lc-ink);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 140ms var(--lc-ease), background 140ms var(--lc-ease), opacity 140ms var(--lc-ease);
+}
+.btn:hover:not(:disabled) { border-color: var(--lc-border-strong); background: var(--lc-bg-soft); }
+.btn:focus-visible { outline: none; box-shadow: var(--lc-ring); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn svg { display: block; }
+
+.btn-primary {
+  min-width: 64px;
+  background: var(--lc-ink);
+  border-color: var(--lc-ink);
+  color: var(--lc-bg);
+}
+.btn-primary:hover:not(:disabled) { background: var(--lc-text-2); border-color: var(--lc-text-2); }
+
+.scrub {
+  flex: 1 1 120px;
+  min-width: 90px;
+  height: 30px;
+  margin: 0;
+  accent-color: var(--lc-accent);
+  cursor: pointer;
+}
+.scrub:focus-visible { outline: none; box-shadow: var(--lc-ring); border-radius: var(--lc-radius-sm); }
+
+.count {
+  font-family: var(--lc-font-mono);
+  font-size: 11px;
+  color: var(--lc-text-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.demo-foot { margin: 10px 2px 0; font-size: 11px; color: var(--lc-text-3); }
+
+/* ---------- SVG 共享视觉词汇（archetype 只补充自己特有的类） ---------- */
+
+#svg text { font-family: var(--lc-font-mono); font-variant-numeric: tabular-nums; }
+
+.lbl { font-size: 12px; fill: var(--lc-text-2); }
+.lbl-strong { font-size: 12px; font-weight: 600; fill: var(--lc-ink); }
+.lbl-dim { font-size: 11px; fill: var(--lc-text-3); }
+
+.cell { fill: var(--lc-bg); stroke: var(--lc-border-strong); stroke-width: var(--dm-stroke); }
+.cell-done { fill: var(--lc-bg-mute); stroke: var(--lc-border); }
+.cell-active { fill: var(--lc-accent-soft); stroke: var(--lc-accent); }
+.cell-hit { fill: var(--lc-green-bg); stroke: var(--lc-green); }
+.cell-val { font-size: 15px; font-weight: 600; fill: var(--lc-ink); text-anchor: middle; }
+.cell-idx { font-size: 10px; fill: var(--lc-text-3); text-anchor: middle; }
+
+.node { fill: var(--lc-bg); stroke: var(--lc-border-strong); stroke-width: var(--dm-stroke); }
+.node-active { fill: var(--lc-accent-soft); stroke: var(--lc-accent); }
+.node-done { fill: var(--lc-green-bg); stroke: var(--lc-green); }
+.node-dim { opacity: 0.3; }
+.node-val { font-size: 14px; font-weight: 600; fill: var(--lc-ink); text-anchor: middle; }
+
+.edge { fill: none; stroke: var(--lc-border-strong); stroke-width: var(--dm-stroke); }
+.edge-active { stroke: var(--lc-accent); }
+.edge-done { stroke: var(--lc-green); }
+
+.ptr-arrow { fill: var(--lc-accent); }
+.ptr-label { font-size: 11px; font-weight: 600; fill: var(--lc-accent); text-anchor: middle; }
+.ptr-prev .ptr-arrow, .ptr-prev .ptr-label { fill: var(--lc-green); }
+.ptr-next .ptr-arrow, .ptr-next .ptr-label { fill: var(--lc-orange); }
+
+.chip-bg { fill: var(--lc-bg-mute); stroke: var(--lc-border); stroke-width: 1; }
+.chip-tx { font-size: 11px; fill: var(--lc-text-2); text-anchor: middle; }
+.chip-new .chip-bg { fill: var(--lc-accent-soft); stroke: var(--lc-accent); }
+.chip-new .chip-tx { fill: var(--lc-accent); font-weight: 600; }
+
+.badge-bg { fill: var(--lc-green-bg); stroke: var(--lc-green); stroke-width: 1; }
+.badge-tx { font-size: 10px; font-weight: 600; fill: var(--lc-green); text-anchor: middle; }
+
+.panel-bg { fill: var(--lc-bg); stroke: var(--lc-border); stroke-width: 1; }
+.panel-title { font-size: 10px; font-weight: 600; fill: var(--lc-text-3); letter-spacing: 0.04em; }
+
+/* 只用 opacity 做入场脉冲：CSS transform 会覆盖 SVG 的 transform 属性，
+   而定位恰恰依赖该属性，所以这里绝不动 transform。 */
+@keyframes dm-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.chip-new { animation: dm-fade-in 320ms var(--lc-ease); }
+
+@media (max-width: 640px) {
+  #app { padding: 12px; }
+  .demo-foot { display: none; }
+  .count { display: none; }
+}
+
+.no-motion *, .no-motion *::before, .no-motion *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* ============================================================
+   archetype: linked-list —— 单链表补充样式
+
+   shell.html 的 .node / .edge / .ptr-* 已经把「节点、连线、指针」三件套的配色
+   定死了，这里只补链表特有、shell 里没有的三类东西：
+     1. null 端点 —— 它必须是看得见的实体，不能只是「箭头没画」。
+        prev = None 和 curr 走到头这两种状态都要有地方可以指。
+     2. 节点内部的 val | next 字段分隔线 + next 小圆点。
+     3. marker 箭头头部 —— marker 内容不吃 .edge 的 stroke，只能自己给 fill。
+   颜色一律取 tokens.css 的语义色，不新增色值。
+   注意：本文件被注入在 shell 样式之后，同优先级下后者胜出。
+   ============================================================ */
+
+/* null 端点：虚线胶囊，一眼区别于实心节点 */
+.ll-null {
+  fill: none;
+  stroke: var(--lc-border-strong);
+  stroke-width: var(--dm-stroke);
+  stroke-dasharray: 4 3;
+}
+/* 节点 0 回指过来之后，这个 null 就成了新链表尾巴的 next，跟着染绿 */
+.ll-null-hit { stroke: var(--lc-green); }
+.ll-null-tx { font-size: 11px; fill: var(--lc-text-3); text-anchor: middle; }
+
+/* 节点内部：val | next 的分隔线与 next 字段小圆点。
+   圆点变绿 = 这条 next 已经从「指向右边」翻成「指向左边」。 */
+.ll-field { stroke: var(--lc-border); stroke-width: 1; }
+.ll-dot { fill: var(--lc-border-strong); }
+.ll-dot-back { fill: var(--lc-green); }
+
+/* 箭头头部三色，与 .edge / .edge-active / .edge-done 的描边一一对应 */
+.ll-ah-dim { fill: var(--lc-border-strong); }
+.ll-ah-accent { fill: var(--lc-accent); }
+.ll-ah-done { fill: var(--lc-green); }
+
+/* 顶栏图例的两条迷你曲线，比线身粗一点才看得清是「拱起 / 下垂」 */
+.ll-lg { stroke-width: 2; }
+</style>
+<script>
+/* 主题引导：首次绘制前同步执行，消除暗色闪烁。
+   嵌入站点时与父页同源 → 读到的就是父站偏好；
+   双击 file:// 离线打开时 → Chrome 会对 localStorage 抛 SecurityError，
+   此时必须退化为系统 prefers-color-scheme，所以两个取值分开 try。
+   判定顺序与 docs/.vitepress/config.ts 的 FAVICON_BOOTSTRAP 等价。 */
+(function () {
+  var dark = false;
+  try { dark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (_) {}
+  try {
+    var e = localStorage.getItem('vitepress-theme-appearance');
+    if (e === 'dark') dark = true;
+    else if (e === 'light') dark = false;
+    /* null / 'auto' → 沿用系统偏好 */
+  } catch (_) { /* file:// 下拿不到 localStorage，沿用系统偏好 */ }
+  if (dark) document.documentElement.classList.add('dark');
+})();
+</script>
+</head>
+<body>
+<div id="app">
+  <div class="demo" data-slug="206-reverse-linked-list">
+
+    <header class="demo-head">
+      <span class="demo-title">206. 反转链表</span>
+    </header>
+
+    <div class="stage" id="stage">
+      <svg id="svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="206. 反转链表 算法分步动画"></svg>
+    </div>
+
+    <p class="caption" id="caption" aria-live="polite"></p>
+
+    <div class="bar" role="group" aria-label="播放控制">
+      <button id="btn-reset" class="btn" type="button" title="重置 (R)" aria-label="重置">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path>
+        </svg>
+      </button>
+      <button id="btn-prev" class="btn" type="button" title="上一步 (←)" aria-label="上一步">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <button id="btn-play" class="btn btn-primary" type="button" title="播放 / 暂停 (空格)" aria-label="播放">播放</button>
+      <button id="btn-next" class="btn" type="button" title="下一步 (→)" aria-label="下一步">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 18l6-6-6-6"></path>
+        </svg>
+      </button>
+      <input id="scrub" class="scrub" type="range" min="0" max="0" step="1" value="0" aria-label="播放进度">
+      <span id="count" class="count"></span>
+      <button id="btn-speed" class="btn" type="button" title="播放速度" aria-label="播放速度">1×</button>
+    </div>
+
+    <p class="demo-foot">快捷键：← / → 单步，空格 播放暂停，R 重置</p>
+  </div>
+</div>
+
+<script>
+/* ⚠️ 不能写 type="module"：Chrome 会以 CORS 为由拒绝执行 file:// 上的 ES 模块，
+      双击离线打开直接白屏。必须是经典内联脚本，且不含 import / 外部 src / fetch。 */
+(function () {
+  'use strict';
+  var SLUG = '206-reverse-linked-list';
+
+/* ============================================================
+   archetype: linked-list
+   参考实现 = 206. 反转链表（head = 1 → 2 → 3 → 4 → 5 → null）
+   动画严格照着题解「## 代码实现」里那段迭代三指针 Python 走：
+   prev / curr / next_node，一步不多、一步不少。
+
+   这是「定距节点行 + 上下双侧边 + 滑动指针徽章」家族的样板；
+   反转 / 合并 / 删除 / 快慢指针 / 相交链表 等链表题都从它改起。
+
+   🔴 布局铁律：节点横坐标只由它在**原链表**里的下标决定，全程不动。
+      指针移动 = 徽章滑动；链表反转 = 边从下方翻到上方。
+      一旦跟着指针重排节点，读者就失去参照系，「反转」根本看不出来。
+
+   ⚠️ 用法：脚手架把本文件内联进 docs/public/demos/<slug>/index.html 之后，
+   直接改**产物文件**里的 VALS / buildSteps() / paint()。
+   不要改本模板 —— 它是样板，不是运行时依赖。
+   ============================================================ */
+
+var VALS = [1, 2, 3, 4, 5];
+var N = VALS.length;
+var STAGE = { w: 680, h: 264, minW: 560 };
+
+/* 每个节点在**原链表**里的后继。paint() 靠它判断某条 next 是否已经翻转过：
+   翻转后 nodes[i].next !== ORIG_NEXT[i] 恒成立（回指左邻 vs 前指右邻）。 */
+var ORIG_NEXT = (function () {
+  var a = [];
+  for (var i = 0; i < N; i++) a.push(i + 1 < N ? i + 1 : null);
+  return a;
+})();
+
+/* 顶栏那枚「当前正在执行哪行 Python」的药丸，逐字抄自题解代码块 */
+var CODE_LINE = {
+  'init': 'prev = None · curr = head',
+  'save-next': 'next_node = curr.next',
+  'rewire': 'curr.next = prev',
+  'advance': 'prev = curr · curr = next_node',
+  'done': 'return prev'
+};
+
+var REV_CHAIN = VALS.slice().reverse().join(' → ');
+
+var steps = [];
+
+function record(patch, caption) {
+  patch.caption = caption;
+  steps.push(patch);
+}
+
+function buildList() {
+  var a = [];
+  for (var i = 0; i < N; i++) {
+    a.push({ id: i, val: VALS[i], next: ORIG_NEXT[i] });
+  }
+  return a;
+}
+
+/* ---------- 录制：真跑一遍算法，每步存一份纯数据快照 ----------
+   🔴 nodes 必须每步整份深拷贝，**连元素一起拷**。链表题改的就是 next 本身，
+      存引用的话所有快照会共享同一批节点对象，动画直接退化成「每帧都是最终态」。
+      check-demo.mjs 对数组元素也做引用同一性比较，所以 map 出新对象是硬要求。 */
+function cloneNodes(nodes) {
+  return nodes.map(function (n) { return { id: n.id, val: n.val, next: n.next }; });
+}
+
+function buildSteps() {
+  var nodes = buildList();
+  var prev = null;        // Python 里的 prev，存节点下标；null = None
+  var curr = 0;           // head 的下标
+  var next_node = null;   // 循环体里临时保存的后继
+  var round = 0;
+
+  record({ phase: 'init', prev: prev, curr: curr, next: null, nodes: cloneNodes(nodes) },
+    '初始化：prev = None，curr = head 指向节点 ' + VALS[0] +
+    '。左边那个 null 就是 prev 此刻的值，反转结束后它会变成新链表尾巴的 next。');
+
+  while (curr !== null) {
+    round++;
+    var v = nodes[curr].val;
+
+    next_node = nodes[curr].next;
+    record({ phase: 'save-next', prev: prev, curr: curr, next: next_node, nodes: cloneNodes(nodes) },
+      next_node === null
+        ? '第 ' + round + ' 轮：curr 是尾节点，next_node = curr.next = null。先把这个 null 存住，它正是 while 循环的退出条件。'
+        : '第 ' + round + ' 轮：先用 next_node 记住 curr.next = ' + nodes[next_node].val +
+          '，否则一旦改写 curr.next 就再也找不到后面的节点了（断链）。');
+
+    nodes[curr].next = prev;
+    record({ phase: 'rewire', prev: prev, curr: curr, next: next_node, nodes: cloneNodes(nodes) },
+      prev === null
+        ? 'curr.next = prev = null：节点 ' + v + ' 的 next 从下方翻到上方，接回最左边那个 null —— 它成了反转后链表的尾巴。'
+        : 'curr.next = prev：节点 ' + v + ' 的 next 掉头指回 ' + nodes[prev].val +
+          '。这条边由下方灰色翻成上方绿色，前面这一段已经反转好了。');
+
+    prev = curr;
+    curr = next_node;
+    record({ phase: 'advance', prev: prev, curr: curr, next: next_node, nodes: cloneNodes(nodes) },
+      curr === null
+        ? 'prev = curr（节点 ' + v + '），curr = next_node = null。while curr 不再成立，循环结束。'
+        : 'prev = curr，curr = next_node：三个指针整体右移一格。prev 守住已反转部分的头，curr 去处理下一个节点。');
+  }
+
+  record({ phase: 'done', prev: prev, curr: curr, next: next_node, nodes: cloneNodes(nodes) },
+    '返回 prev —— 它指向节点 ' + nodes[prev].val + '，就是反转后的新头节点。整条链变成 ' +
+    REV_CHAIN + ' → null，每条 next 都从下方翻到了上方。');
+}
+
+buildSteps();
+
+/* ---------- 渲染 ----------
+   🔴 绝不每步 innerHTML 重建 —— 那会杀掉所有 CSS transition，动画就没了。
+      用 keyed 元素缓存：首帧创建，之后只改 class / opacity / transform / textContent。
+      位移一律走 style.transform 而非重设 x 属性，transition 才会滑动。
+      本 archetype 的元素数量是定值（节点数固定，每个节点恰好一条上方弧 + 一条下方边），
+      所以不需要 array-hash 里的 reconcile()：没有元素增删，只有显隐与改色。 */
+
+var NS = 'http://www.w3.org/2000/svg';
+var cache = Object.create(null);
+
+/* 列号：-1 = 左边的 null，0..N-1 = 节点，N = 右边的 null。
+   🔴 cx() 只吃列号，任何一步都不会变 —— 这就是那个「稳定参照系」。 */
+var COLW = 88;
+var MX = (STAGE.w - (N + 1) * COLW) / 2;
+function cx(c) { return MX + (c + 1) * COLW; }
+
+var NODE_W = 56, NODE_H = 44;
+var NODE_TOP = 96, NODE_CY = NODE_TOP + NODE_H / 2, NODE_BOT = NODE_TOP + NODE_H;
+var NULL_W = 48, NULL_H = 28;
+var NULL_TOP = NODE_CY - NULL_H / 2, NULL_BOT = NULL_TOP + NULL_H;
+
+var BACK_RISE = 76;   // 上方回指弧的拱起量（弧顶落在 y≈58，避开顶栏图例）
+var FWD_SAG = 40;     // 下方前指边的下垂量（谷底落在 y≈160）
+var LANE_A = 176;     // prev / next_node 徽章的箭头尖端 y
+var LANE_B = 218;     // curr 徽章单独占一行：advance 时它与 next_node 同列，分行才不会叠字
+
+function isNullCol(c) { return c < 0 || c >= N; }
+function halfW(c) { return isNullCol(c) ? NULL_W / 2 : NODE_W / 2; }
+function topY(c) { return isNullCol(c) ? NULL_TOP : NODE_TOP; }
+function botY(c) { return isNullCol(c) ? NULL_BOT : NODE_BOT; }
+
+/* 该节点的 next 是否已经翻转过（回指左边） */
+function isBack(s, i) { return s.nodes[i].next !== ORIG_NEXT[i]; }
+
+/* 上方回指弧：从 a 顶部拱起、落回 b 顶部（b 在 a 左边），箭头指向 b */
+function arcUp(a, b) {
+  var x1 = cx(a) - halfW(a) + 12, y1 = topY(a);
+  var x2 = cx(b) + halfW(b) - 12, y2 = topY(b);
+  return 'M' + x1 + ' ' + y1 + ' Q' + ((x1 + x2) / 2) + ' ' +
+    (Math.min(y1, y2) - BACK_RISE) + ' ' + x2 + ' ' + y2;
+}
+
+/* 下方前指边：从 a 底部垂下、抬进 b 底部（b 在 a 右边），箭头指向 b */
+function arcDown(a, b) {
+  var x1 = cx(a) + halfW(a) - 12, y1 = botY(a);
+  var x2 = cx(b) - halfW(b) + 12, y2 = botY(b);
+  return 'M' + x1 + ' ' + y1 + ' Q' + ((x1 + x2) / 2) + ' ' +
+    (Math.max(y1, y2) + FWD_SAG) + ' ' + x2 + ' ' + y2;
+}
+
+function ensure(key, tag) {
+  var e = cache[key];
+  if (!e) {
+    e = document.createElementNS(NS, tag);
+    e.style.transition = 'transform var(--dm-dur) var(--lc-ease),' +
+      ' opacity var(--dm-dur) var(--lc-ease),' +
+      ' fill var(--dm-dur) var(--lc-ease),' +
+      ' stroke var(--dm-dur) var(--lc-ease)';
+    cache[key] = e;
+    svg.appendChild(e);
+  }
+  return e;
+}
+
+function attr(e, o) { for (var k in o) e.setAttribute(k, o[k]); }
+function txt(e, s) { if (e.textContent !== s) e.textContent = s; }
+
+/* 箭头一律用 marker：曲率到处变，手绘三角形要自己算切线角，得不偿失。
+   marker 内容不吃 .edge 的 stroke，颜色只能靠 linked-list.css 里的 .ll-ah-* 给 fill。 */
+function ensureMarkers() {
+  if (cache['defs']) return;
+  var defs = document.createElementNS(NS, 'defs');
+  var kinds = { dim: 'll-ah-dim', accent: 'll-ah-accent', done: 'll-ah-done' };
+  for (var k in kinds) {
+    var m = document.createElementNS(NS, 'marker');
+    attr(m, {
+      id: 'dm-ah-' + k, markerUnits: 'userSpaceOnUse',
+      markerWidth: 8, markerHeight: 8, refX: 7, refY: 4, orient: 'auto'
+    });
+    var p = document.createElementNS(NS, 'path');
+    attr(p, { d: 'M0 0 L8 4 L0 8 Z', class: kinds[k] });
+    m.appendChild(p);
+    defs.appendChild(m);
+  }
+  cache['defs'] = defs;
+  svg.appendChild(defs);
+}
+
+/* 指针徽章：箭头朝上戳住节点底边，整组靠 style.transform 平移（这样才会滑动） */
+function paintPtr(key, cls, label, col, laneY, opacity) {
+  var g = cache[key];
+  if (!g) {
+    g = document.createElementNS(NS, 'g');
+    g.style.transition = 'transform var(--dm-dur) var(--lc-ease),' +
+      ' opacity var(--dm-dur) var(--lc-ease)';
+    var arrow = document.createElementNS(NS, 'path');
+    attr(arrow, { d: 'M0 0 L-6 12 L6 12 Z', class: 'ptr-arrow' });
+    var lab = document.createElementNS(NS, 'text');
+    attr(lab, { y: 26, class: 'ptr-label' });
+    g.appendChild(arrow);
+    g.appendChild(lab);
+    cache[key] = g;
+    svg.appendChild(g);
+  }
+  attr(g, { class: cls });
+  g.style.opacity = opacity;
+  g.style.transform = 'translate(' + cx(col) + 'px,' + laneY + 'px)';
+  txt(g.childNodes[1], label);
+}
+
+function paint(s) {
+  var i, e;
+
+  ensureMarkers();
+
+  /* ---------- 顶栏：图例（两条迷你曲线各自示范上方 / 下方的边） ---------- */
+  e = ensure('lg-up', 'path');
+  attr(e, { d: 'M18 24 Q29 14 40 24', class: 'edge edge-done ll-lg' });
+  e = ensure('lg-up-tx', 'text');
+  attr(e, { x: 46, y: 24, class: 'lbl-dim' });
+  txt(e, '已反转的 next');
+
+  e = ensure('lg-dn', 'path');
+  attr(e, { d: 'M150 20 Q161 30 172 20', class: 'edge ll-lg' });
+  e = ensure('lg-dn-tx', 'text');
+  attr(e, { x: 178, y: 24, class: 'lbl-dim' });
+  txt(e, '未反转的 next');
+
+  /* ---------- 顶栏：当前执行到哪行 Python（done 时换成绿色结论色） ---------- */
+  var fin = s.phase === 'done';
+  e = ensure('code-bg', 'rect');
+  attr(e, { x: STAGE.w - 256, y: 9, width: 240, height: 22, rx: 11, class: fin ? 'badge-bg' : 'chip-bg' });
+  e = ensure('code-tx', 'text');
+  attr(e, { x: STAGE.w - 136, y: 24, class: fin ? 'badge-tx' : 'chip-tx' });
+  txt(e, CODE_LINE[s.phase]);
+
+  /* ---------- 两个 null 端点：prev = None 和 curr 走到头都指着它们 ---------- */
+  e = ensure('null-l-bg', 'rect');
+  /* 节点 0 一旦回指左边，这个 null 就成了新链表尾巴的 next，跟着染绿 */
+  attr(e, {
+    x: cx(-1) - NULL_W / 2, y: NULL_TOP, width: NULL_W, height: NULL_H, rx: NULL_H / 2,
+    class: 'll-null' + (isBack(s, 0) ? ' ll-null-hit' : '')
+  });
+  e = ensure('null-l-tx', 'text');
+  attr(e, { x: cx(-1), y: NULL_TOP + 18, class: 'll-null-tx' });
+  txt(e, 'null');
+
+  e = ensure('null-r-bg', 'rect');
+  attr(e, { x: cx(N) - NULL_W / 2, y: NULL_TOP, width: NULL_W, height: NULL_H, rx: NULL_H / 2, class: 'll-null' });
+  e = ensure('null-r-tx', 'text');
+  attr(e, { x: cx(N), y: NULL_TOP + 18, class: 'll-null-tx' });
+  txt(e, 'null');
+
+  /* ---------- 节点行：定距，永不重排 ---------- */
+  for (i = 0; i < N; i++) {
+    var x = cx(i);
+    var back = isBack(s, i);
+    var cls = 'node';
+    if (s.curr === i) cls += ' node-active';
+    else if (back) cls += ' node-done';
+
+    e = ensure('nb' + i, 'rect');
+    attr(e, { x: x - NODE_W / 2, y: NODE_TOP, width: NODE_W, height: NODE_H, rx: 9, class: cls });
+
+    /* val | next 两个字段之间的分隔线 */
+    e = ensure('nf' + i, 'line');
+    attr(e, { x1: x + 8, y1: NODE_TOP + 7, x2: x + 8, y2: NODE_BOT - 7, class: 'll-field' });
+
+    e = ensure('nv' + i, 'text');
+    attr(e, { x: x - 10, y: NODE_CY + 5, class: 'node-val' });
+    txt(e, String(VALS[i]));
+
+    /* next 字段小圆点：颜色跟着这条边有没有翻转过走 */
+    e = ensure('nd' + i, 'circle');
+    attr(e, { cx: x + 18, cy: NODE_CY, r: 3.5, class: back ? 'll-dot ll-dot-back' : 'll-dot' });
+  }
+
+  /* ---------- 边：每个节点恰好一条 next，未反转在下方（灰），已反转在上方（绿） ----------
+     翻转那一步两条路径互换 opacity，配合 ensure() 里的 transition 就是一次交叉淡入淡出，
+     看上去正是「这条边从下面翻到了上面」。 */
+  for (i = 0; i < N; i++) {
+    var isb = isBack(s, i);
+    var bt = isb ? (s.nodes[i].next === null ? -1 : s.nodes[i].next) : (i === 0 ? -1 : i - 1);
+    var ft = ORIG_NEXT[i] === null ? N : ORIG_NEXT[i];
+    /* 高亮：save-next 时点亮「正在被读」的下方边，rewire 时点亮「刚刚翻上去」的上方弧 */
+    var hotB = isb && s.phase === 'rewire' && s.curr === i;
+    var hotF = !isb && s.phase === 'save-next' && s.curr === i;
+
+    e = ensure('eb' + i, 'path');
+    attr(e, {
+      d: arcUp(i, bt), fill: 'none',
+      class: 'edge ' + (hotB ? 'edge-active' : 'edge-done'),
+      'marker-end': 'url(#dm-ah-' + (hotB ? 'accent' : 'done') + ')'
+    });
+    e.style.opacity = isb ? '1' : '0';
+
+    e = ensure('ef' + i, 'path');
+    attr(e, {
+      d: arcDown(i, ft), fill: 'none',
+      class: 'edge' + (hotF ? ' edge-active' : ''),
+      'marker-end': 'url(#dm-ah-' + (hotF ? 'accent' : 'dim') + ')'
+    });
+    e.style.opacity = isb ? '0' : '1';
+  }
+
+  /* ---------- 三个滑动指针徽章 ----------
+     prev = None → 左边那个 null；curr / next_node = null → 右边那个 null。
+     init 时 next_node 还没被赋值，先藏起来，别让它假装站在某个位置上。 */
+  paintPtr('ptr-prev', 'ptr-prev', 'prev', s.prev === null ? -1 : s.prev, LANE_A, '1');
+  paintPtr('ptr-curr', '', 'curr', s.curr === null ? N : s.curr, LANE_B, '1');
+  paintPtr('ptr-next', 'ptr-next', 'next_node', s.next === null ? N : s.next, LANE_A,
+    s.phase === 'init' ? '0' : '1');
+}
+
+/* ============================================================
+   KERNEL —— 主题通信 + 播放控制 + 高度上报（全部 archetype 共用）
+
+   契约：ARCH 段必须提供
+     var steps            快照数组，每项含 phase / caption 及 archetype 专属字段
+     function paint(s)    渲染一帧快照
+   可选提供
+     var STAGE = { w, h, minW }   viewBox 尺寸；minW 为窄屏横向滚动触发宽度
+   ============================================================ */
+
+var CFG = (typeof STAGE !== 'undefined' && STAGE) ? STAGE : { w: 660, h: 300, minW: 0 };
+
+var app = document.getElementById('app');
+var svg = document.getElementById('svg');
+svg.setAttribute('viewBox', '0 0 ' + CFG.w + ' ' + CFG.h);
+if (CFG.minW) document.documentElement.style.setProperty('--dm-stage-minw', CFG.minW + 'px');
+
+var el = {
+  prev: document.getElementById('btn-prev'),
+  play: document.getElementById('btn-play'),
+  next: document.getElementById('btn-next'),
+  reset: document.getElementById('btn-reset'),
+  speed: document.getElementById('btn-speed'),
+  scrub: document.getElementById('scrub'),
+  count: document.getElementById('count'),
+  caption: document.getElementById('caption')
+};
+
+/* ---------- 与父页通信 ---------- */
+
+var MSG = 'lc-demo';
+
+/* 目标 origin：嵌入时从 referrer 取（精确投递）；file:// 下取不到就退回 '*'。
+   载荷只有主题名和像素高度，不含敏感信息。 */
+var PARENT_ORIGIN = (function () {
+  try { return new URL(document.referrer).origin || '*'; } catch (_) { return '*'; }
+})();
+
+function post(type, payload) {
+  if (window.parent === window) return;   // 双击离线打开时没有父窗口
+  var msg = { type: MSG + ':' + type };
+  for (var k in (payload || {})) msg[k] = payload[k];
+  try { window.parent.postMessage(msg, PARENT_ORIGIN); } catch (_) {}
+}
+
+/* ---------- 高度上报 ---------- */
+
+var lastH = 0;
+var rafId = 0;
+
+function reportHeight() {
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(function () {
+    rafId = 0;
+    var h = Math.ceil(app.getBoundingClientRect().height);
+    if (h > 0 && Math.abs(h - lastH) >= 1) {
+      lastH = h;
+      post('height', { height: h });
+    }
+  });
+}
+
+/* 🔴 只 observe #app。observe documentElement 或 body 会与父页设定的 iframe
+      高度互相触发，形成 ResizeObserver 死循环（页面卡顿 + 高度来回抖）。 */
+if ('ResizeObserver' in window) new ResizeObserver(reportHeight).observe(app);
+window.addEventListener('resize', reportHeight);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(reportHeight);
+
+/* ---------- 播放控制 ---------- */
+
+var BASE_MS = 900;
+var SPEEDS = [0.5, 1, 1.5, 2];
+var idx = 0;
+var playing = false;
+var speedIdx = 1;
+var timer = null;
+
+function lastIdx() { return steps.length - 1; }
+
+function go(n) {
+  idx = Math.max(0, Math.min(lastIdx(), n));
+  var s = steps[idx];
+  paint(s);
+  el.caption.textContent = s.caption;
+  el.caption.setAttribute('data-phase', s.phase);
+  el.scrub.value = String(idx);
+  el.count.textContent = '第 ' + (idx + 1) + ' / ' + steps.length + ' 步';
+  el.prev.disabled = idx === 0;
+  el.next.disabled = idx === lastIdx();
+  var label = playing ? '暂停' : (idx === lastIdx() ? '重播' : '播放');
+  el.play.textContent = label;
+  el.play.setAttribute('aria-label', label);
+  reportHeight();   // 旁白换行会改变高度
+}
+
+/* 用 setTimeout 递归而非 setInterval：变速能立刻生效，末尾自动停也精确。 */
+function schedule() {
+  clearTimeout(timer);
+  timer = setTimeout(tick, BASE_MS / SPEEDS[speedIdx]);
+}
+
+function tick() {
+  if (idx >= lastIdx()) { pause(); return; }
+  go(idx + 1);
+  if (!playing) return;
+  if (idx >= lastIdx()) pause();   // 到末步立即停，按钮马上变「重播」
+  else schedule();
+}
+
+function play() {
+  if (idx >= lastIdx()) go(0);   // 末步点播放 = 重播
+  playing = true;
+  go(idx);
+  schedule();
+}
+
+function pause() {
+  playing = false;
+  clearTimeout(timer);
+  go(idx);
+}
+
+function toggle() { if (playing) pause(); else play(); }
+
+function reset() { pause(); go(0); }
+
+function stepBy(d) {
+  if (playing) pause();
+  go(idx + d);
+}
+
+el.prev.addEventListener('click', function () { stepBy(-1); });
+el.next.addEventListener('click', function () { stepBy(1); });
+el.play.addEventListener('click', toggle);
+el.reset.addEventListener('click', reset);
+el.speed.addEventListener('click', function () {
+  speedIdx = (speedIdx + 1) % SPEEDS.length;
+  el.speed.textContent = SPEEDS[speedIdx] + '×';
+  if (playing) schedule();
+});
+el.scrub.addEventListener('input', function () {
+  if (playing) pause();
+  go(Number(el.scrub.value));
+});
+
+document.addEventListener('keydown', function (e) {
+  var t = e.target;
+  /* range 上的方向键要留给原生行为，否则进度条拖不动 */
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  switch (e.key) {
+    case 'ArrowRight': e.preventDefault(); stepBy(1); break;
+    case 'ArrowLeft': e.preventDefault(); stepBy(-1); break;
+    case ' ': e.preventDefault(); toggle(); break;
+    case 'Home': e.preventDefault(); if (playing) pause(); go(0); break;
+    case 'End': e.preventDefault(); if (playing) pause(); go(lastIdx()); break;
+    case 'r': case 'R': e.preventDefault(); reset(); break;
+  }
+});
+
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.documentElement.classList.add('no-motion');
+}
+
+/* ---------- 主题同步 ---------- */
+
+window.addEventListener('message', function (e) {
+  /* 与 origin 无关的强校验：来源窗口必须是自己的父窗口，且消息形状必须匹配 */
+  if (e.source !== window.parent) return;
+  var d = e.data;
+  if (!d || d.type !== MSG + ':theme') return;
+  document.documentElement.classList.toggle('dark', d.theme === 'dark');
+  reportHeight();
+});
+
+/* ---------- 启动 ---------- */
+
+/* 空步骤是 archetype 编写期的真实失误，直接崩会白屏且难定位，所以给一条明确提示。 */
+if (!steps.length) {
+  el.caption.textContent = '该演示尚未生成任何步骤，请检查 buildSteps()。';
+  el.count.textContent = '第 0 / 0 步';
+  el.prev.disabled = el.next.disabled = true;
+} else {
+  el.scrub.max = String(lastIdx());
+  /* 由 iframe 主动喊 ready，父页收到后才回发主题 —— 解决父页抢先 post 被丢掉的竞态。
+     必须放在 message 监听器挂好之后。 */
+  post('ready', { slug: SLUG, steps: steps.length });
+  go(0);
+  reportHeight();
+}
+})();
+</script>
+</body>
+</html>

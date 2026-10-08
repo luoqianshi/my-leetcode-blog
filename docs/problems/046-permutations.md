@@ -48,6 +48,10 @@ class Solution:
         return result
 ```
 
+## 图解演示
+
+<ProblemDemo slug="046-permutations" title="046. 全排列" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n × n!)

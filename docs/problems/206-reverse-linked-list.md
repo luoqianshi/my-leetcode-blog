@@ -37,6 +37,10 @@ class Solution:
         return prev
 ```
 
+## 图解演示
+
+<ProblemDemo slug="206-reverse-linked-list" title="206. 反转链表" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

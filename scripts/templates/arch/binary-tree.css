@@ -1,0 +1,33 @@
+/* ============================================================
+   archetype: binary-tree —— 补充样式
+   只放树 / 递归调用栈面板特有的类；共用视觉词汇
+   （.node .edge .chip .badge-* .panel-* .lbl-*）一律沿用 shell.html。
+   选择器全部带 #svg 前缀，确保盖过 shell 里的同名单类规则。
+   ============================================================ */
+
+/* 中文换回无衬线：#svg text 默认给的是等宽字体，汉字会掉进难看的回退 */
+#svg .bt-sans { font-family: var(--lc-font-sans); }
+#svg .bt-l { text-anchor: start; }
+#svg .bt-r { text-anchor: end; }
+
+/* 空节点：小空心圈 + 虚线短边。命中 if not root 基线时点亮成橙色 */
+#svg .bt-null { fill: var(--lc-bg-soft); stroke: var(--lc-text-3); stroke-width: 1.2; opacity: 0.5; }
+#svg .bt-null-on { fill: var(--lc-orange-bg); stroke: var(--lc-orange); opacity: 1; }
+#svg .bt-edge-null { stroke: var(--lc-border-strong); stroke-dasharray: 3 3; opacity: 0.55; }
+#svg .bt-edge-null-on { stroke: var(--lc-orange); opacity: 1; }
+
+/* 当前节点外的高亮环；return 阶段转绿 = 这一帧正在把答案交回上一层 */
+#svg .bt-ring { fill: none; stroke: var(--lc-accent); stroke-width: 2; }
+#svg .bt-ring-done { stroke: var(--lc-green); }
+
+/* 调用栈里的帧 */
+#svg .bt-frame-null { stroke-dasharray: 3 3; }
+#svg .bt-tx-ret { fill: var(--lc-green); font-weight: 600; }
+#svg .bt-state { font-family: var(--lc-font-sans); font-size: 10px; fill: var(--lc-text-3); text-anchor: end; }
+#svg .bt-state-ret { fill: var(--lc-green); }
+#svg .bt-state-null { fill: var(--lc-orange); }
+
+/* 面板下半部：本步返回值 */
+#svg .bt-div { stroke: var(--lc-border); stroke-width: 1; }
+#svg .bt-ret-tx { font-size: 12px; font-weight: 600; fill: var(--lc-ink); text-anchor: start; }
+#svg .bt-ret-dim { fill: var(--lc-text-3); font-weight: 400; }

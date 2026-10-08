@@ -30,6 +30,10 @@ class Solution:
         return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
 ```
 
+## 图解演示
+
+<ProblemDemo slug="104-maximum-depth-of-binary-tree" title="104. 二叉树的最大深度" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)
