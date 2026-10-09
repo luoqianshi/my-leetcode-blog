@@ -944,13 +944,26 @@ h1, h2, h3, h4 {
 
 .problem-demo-host {
   position: relative;
-  aspect-ratio: 16 / 9; /* 收到 iframe 上报的高度后被内联 height 覆盖 */
+  /* 仅在收到 iframe 首次高度上报之前充当占位比例。
+     🔴 一旦内联 height 生效必须立刻用 --sized 取消 aspect-ratio：
+        否则浏览器会按比例从 height 反推 width（block 元素也会），
+        而 iframe 上报的高度又随其宽度等比变化，形成正反馈，
+        宿主会被一路放大到上千像素。 */
+  aspect-ratio: 16 / 9;
   min-height: 200px;
+  /* 内联 height 来自 iframe 内 #app 的 border-box 高度。
+     这里用 content-box 才能让 iframe（height:100%）的可视高度
+     与上报值精确相等；border-box 会扣掉上下边框造成 2px 纵向滚动条。 */
+  box-sizing: content-box;
   overflow: hidden;
   border: 1px solid var(--lc-border);
   border-radius: var(--lc-radius-lg);
   background: var(--lc-bg-soft);
   transition: height 140ms var(--lc-ease);
+}
+
+.problem-demo-host--sized {
+  aspect-ratio: auto;
 }
 
 .problem-demo-frame {

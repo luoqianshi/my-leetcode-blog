@@ -1,7 +1,12 @@
 <template>
   <ClientOnly>
     <figure class="problem-demo">
-      <div ref="hostRef" class="problem-demo-host" :style="height ? { height: `${height}px` } : undefined">
+      <div
+        ref="hostRef"
+        class="problem-demo-host"
+        :class="{ 'problem-demo-host--sized': height > 0 }"
+        :style="height ? { height: `${height}px` } : undefined"
+      >
         <iframe
           v-if="activated && status !== 'error'"
           ref="frameRef"
