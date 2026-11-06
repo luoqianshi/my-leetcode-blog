@@ -37,10 +37,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="152-maximum-product-subarray" title="152. 乘积最大子数组" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

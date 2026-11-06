@@ -54,10 +54,6 @@ class Solution:
         return [-1, -1]
 ```
 
-## 图解演示
-
-<ProblemDemo slug="034-find-first-and-last-position-of-element-in-sorted-array" title="034. 在排序数组中查找元素的第一个和最后一个位置" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(log n)

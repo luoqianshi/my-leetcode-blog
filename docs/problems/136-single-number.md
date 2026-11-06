@@ -31,10 +31,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="136-single-number" title="136. 只出现一次的数字" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

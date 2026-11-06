@@ -37,10 +37,6 @@ class Solution:
         return dp[n]
 ```
 
-## 图解演示
-
-<ProblemDemo slug="279-perfect-squares" title="279. 完全平方数" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n × sqrt(n)

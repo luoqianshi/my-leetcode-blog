@@ -58,10 +58,6 @@ class Solution:
                 left = i + 1
 ```
 
-## 图解演示
-
-<ProblemDemo slug="004-median-of-two-sorted-arrays" title="004. 寻找两个正序数组的中位数" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(log(min(m, n)))，只对较短数组二分

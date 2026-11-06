@@ -46,10 +46,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="438-find-all-anagrams-in-a-string" title="438. 找到字符串中所有字母异位词" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

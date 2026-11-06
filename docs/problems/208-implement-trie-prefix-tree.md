@@ -59,10 +59,6 @@ class Trie:
         return True
 ```
 
-## 图解演示
-
-<ProblemDemo slug="208-implement-trie-prefix-tree" title="208. 实现 Trie（前缀树）" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

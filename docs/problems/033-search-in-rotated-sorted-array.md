@@ -47,10 +47,6 @@ class Solution:
         return -1
 ```
 
-## 图解演示
-
-<ProblemDemo slug="033-search-in-rotated-sorted-array" title="033. 搜索旋转排序数组" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(log n)

@@ -95,10 +95,6 @@ class LRUCache:
             self.cache.popitem(last=False)  # 移除最久未使用
 ```
 
-## 图解演示
-
-<ProblemDemo slug="146-lru-cache" title="146. LRU 缓存" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

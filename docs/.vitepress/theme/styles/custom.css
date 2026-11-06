@@ -4,9 +4,6 @@
    ============================================================ */
 
 /* ===== 1. Design Tokens ===== */
-/* 下面这批 --lc-* 令牌在 scripts/templates/tokens.css 里有一份刻意重复的副本，
-   供 docs/public/demos/ 下的单文件图解演示使用（iframe 是独立 document，无法继承
-   本站样式，且要求零外部依赖）。改动这里的令牌后需重跑 create-demo.mjs 同步。 */
 
 :root {
   /* 色彩 — Cursor 浅色基调 */
@@ -935,83 +932,6 @@ h1, h2, h3, h4 {
 }
 .review-card:has(.badge-advanced)::before {
   background: linear-gradient(90deg, var(--lc-red), #f87171);
-}
-
-/* 图解演示 —— iframe 承载 docs/public/demos/<slug>/index.html */
-.demo-jump {
-  display: inline-block;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--lc-accent);
-  padding: 6px 0;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.problem-demo {
-  margin: 20px 0;
-}
-
-.problem-demo-host {
-  position: relative;
-  /* 仅在收到 iframe 首次高度上报之前充当占位比例。
-     🔴 一旦内联 height 生效必须立刻用 --sized 取消 aspect-ratio：
-        否则浏览器会按比例从 height 反推 width（block 元素也会），
-        而 iframe 上报的高度又随其宽度等比变化，形成正反馈，
-        宿主会被一路放大到上千像素。 */
-  aspect-ratio: 16 / 9;
-  min-height: 200px;
-  /* 内联 height 来自 iframe 内 #app 的 border-box 高度。
-     这里用 content-box 才能让 iframe（height:100%）的可视高度
-     与上报值精确相等；border-box 会扣掉上下边框造成 2px 纵向滚动条。 */
-  box-sizing: content-box;
-  overflow: hidden;
-  border: 1px solid var(--lc-border);
-  border-radius: var(--lc-radius-lg);
-  background: var(--lc-bg-soft);
-  transition: height 140ms var(--lc-ease);
-}
-
-.problem-demo-host--sized {
-  aspect-ratio: auto;
-}
-
-.problem-demo-frame {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background: transparent;
-}
-
-.problem-demo-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--lc-text-3);
-  background: repeating-linear-gradient(45deg, var(--lc-bg-mute) 0 10px, transparent 10px 20px);
-}
-
-.problem-demo-cap {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.problem-demo-open {
-  color: var(--lc-accent);
-  text-decoration: none;
-}
-
-.problem-demo-open:hover {
-  text-decoration: underline;
 }
 
 /* ===== 5. VitePress Chrome ===== */

@@ -45,10 +45,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="102-binary-tree-level-order-traversal" title="102. 二叉树的层序遍历" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

@@ -45,10 +45,6 @@ class Solution:
         return build(0, len(preorder) - 1, 0, len(inorder) - 1)
 ```
 
-## 图解演示
-
-<ProblemDemo slug="105-construct-binary-tree-from-preorder-and-inorder-traversal" title="105. 从前序与中序遍历序列构造二叉树" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

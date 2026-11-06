@@ -45,10 +45,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="039-combination-sum" title="039. 组合总和" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n^(target/min)

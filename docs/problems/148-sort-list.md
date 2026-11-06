@@ -54,10 +54,6 @@ class Solution:
         return dummy.next
 ```
 
-## 图解演示
-
-<ProblemDemo slug="148-sort-list" title="148. 排序链表" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n log n)

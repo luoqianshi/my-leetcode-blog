@@ -36,10 +36,6 @@ class Solution:
         return left or right  # 只在一侧找到
 ```
 
-## 图解演示
-
-<ProblemDemo slug="236-lowest-common-ancestor-of-a-binary-tree" title="236. 二叉树的最近公共祖先" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

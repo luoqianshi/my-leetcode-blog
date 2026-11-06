@@ -55,10 +55,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="054-spiral-matrix" title="054. 螺旋矩阵" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(m×n)

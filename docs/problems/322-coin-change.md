@@ -36,10 +36,6 @@ class Solution:
         return dp[amount] if dp[amount] != float('inf') else -1
 ```
 
-## 图解演示
-
-<ProblemDemo slug="322-coin-change" title="322. 零钱兑换" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(amount × |coins|)

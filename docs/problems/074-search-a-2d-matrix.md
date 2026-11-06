@@ -41,10 +41,6 @@ class Solution:
         return False
 ```
 
-## 图解演示
-
-<ProblemDemo slug="074-search-a-2d-matrix" title="074. 搜索二维矩阵" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(log(mn)

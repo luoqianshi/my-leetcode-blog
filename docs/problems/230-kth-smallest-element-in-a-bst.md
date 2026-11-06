@@ -43,10 +43,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="230-kth-smallest-element-in-a-bst" title="230. 二叉搜索树中第 K 小的元素" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(h + k)

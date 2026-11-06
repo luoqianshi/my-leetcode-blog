@@ -37,10 +37,6 @@ class Solution:
         return heap[0]
 ```
 
-## 图解演示
-
-<ProblemDemo slug="215-kth-largest-element-in-an-array" title="215. 数组中的第 K 个最大元素" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n log k)

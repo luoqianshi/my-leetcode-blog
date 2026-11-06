@@ -38,10 +38,6 @@ class Solution:
         return max_water
 ```
 
-## 图解演示
-
-<ProblemDemo slug="011-container-with-most-water" title="011. 盛最多水的容器" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

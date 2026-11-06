@@ -58,10 +58,6 @@ class Solution:
         return dummy.next
 ```
 
-## 图解演示
-
-<ProblemDemo slug="138-copy-list-with-random-pointer" title="138. 随机链表的复制" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，三趟线性遍历

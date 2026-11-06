@@ -50,10 +50,6 @@ class Solution:
                 i += 1
 ```
 
-## 图解演示
-
-<ProblemDemo slug="075-sort-colors" title="075. 颜色分类" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，一趟扫描

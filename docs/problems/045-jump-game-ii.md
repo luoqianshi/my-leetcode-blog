@@ -38,10 +38,6 @@ class Solution:
         return jumps
 ```
 
-## 图解演示
-
-<ProblemDemo slug="045-jump-game-ii" title="045. 跳跃游戏 II" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

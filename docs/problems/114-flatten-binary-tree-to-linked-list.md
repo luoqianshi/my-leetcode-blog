@@ -47,10 +47,6 @@ class Solution:
             prev.right = None
 ```
 
-## 图解演示
-
-<ProblemDemo slug="114-flatten-binary-tree-to-linked-list" title="114. 二叉树展开为链表" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

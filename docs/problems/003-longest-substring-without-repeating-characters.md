@@ -38,10 +38,6 @@ class Solution:
         return max_len
 ```
 
-## 图解演示
-
-<ProblemDemo slug="003-longest-substring-without-repeating-characters" title="003. 无重复字符的最长子串" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

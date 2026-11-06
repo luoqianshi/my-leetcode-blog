@@ -45,10 +45,6 @@ class Solution:
         return self.diameter
 ```
 
-## 图解演示
-
-<ProblemDemo slug="543-diameter-of-binary-tree" title="543. 二叉树的直径" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

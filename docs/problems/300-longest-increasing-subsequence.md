@@ -39,10 +39,6 @@ class Solution:
         return len(tails)
 ```
 
-## 图解演示
-
-<ProblemDemo slug="300-longest-increasing-subsequence" title="300. 最长递增子序列" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n log n)

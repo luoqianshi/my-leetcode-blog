@@ -42,10 +42,6 @@ class Solution:
         return answer
 ```
 
-## 图解演示
-
-<ProblemDemo slug="238-product-of-array-except-self" title="238. 除自身以外数组的乘积" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

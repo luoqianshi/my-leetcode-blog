@@ -39,10 +39,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="763-partition-labels" title="763. 划分字母区间" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

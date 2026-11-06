@@ -42,10 +42,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="022-generate-parentheses" title="022. 括号生成" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(4^n / sqrt(n)

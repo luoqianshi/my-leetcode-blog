@@ -37,10 +37,6 @@ class Solution:
         return b
 ```
 
-## 图解演示
-
-<ProblemDemo slug="198-house-robber" title="198. 打家劫舍" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

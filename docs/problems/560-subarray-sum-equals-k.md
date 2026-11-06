@@ -37,10 +37,6 @@ class Solution:
         return count
 ```
 
-## 图解演示
-
-<ProblemDemo slug="560-subarray-sum-equals-k" title="560. 和为 K 的子数组" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

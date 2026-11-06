@@ -43,10 +43,6 @@ class Solution:
         nums[i + 1:] = reversed(nums[i + 1:])     # 3. 反转后缀
 ```
 
-## 图解演示
-
-<ProblemDemo slug="031-next-permutation" title="031. 下一个排列" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，三次线性扫描

@@ -52,10 +52,6 @@ class Solution:
         return "" if min_len == float('inf') else s[start:start + min_len]
 ```
 
-## 图解演示
-
-<ProblemDemo slug="076-minimum-window-substring" title="076. 最小覆盖子串" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(|S| + |T|)

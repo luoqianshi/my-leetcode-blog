@@ -41,10 +41,6 @@ class Solution:
         return answer
 ```
 
-## 图解演示
-
-<ProblemDemo slug="739-daily-temperatures" title="739. 每日温度" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

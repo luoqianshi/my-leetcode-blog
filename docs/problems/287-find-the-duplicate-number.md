@@ -45,10 +45,6 @@ class Solution:
         return slow
 ```
 
-## 图解演示
-
-<ProblemDemo slug="287-find-the-duplicate-number" title="287. 寻找重复数" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，两阶段指针各走有限步（证明同 Floyd 判环）

@@ -6,12 +6,7 @@
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "demo:new": "node scripts/create-demo.mjs",
-    "demo:generate": "node scripts/build-walkthroughs.mjs",
-    "demo:inject": "node scripts/inject-demo-section.mjs",
-    "demo:check": "node scripts/check-demo.mjs",
-    "demo:missing": "node scripts/create-demo.mjs --list-missing"
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "markdown-it-katex": "^2.0.3",

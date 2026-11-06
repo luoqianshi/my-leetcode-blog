@@ -45,10 +45,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="199-binary-tree-right-side-view" title="199. 二叉树的右视图" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

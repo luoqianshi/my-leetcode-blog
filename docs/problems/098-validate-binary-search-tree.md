@@ -56,10 +56,6 @@ class Solution:
         return inorder(root)
 ```
 
-## 图解演示
-
-<ProblemDemo slug="098-validate-binary-search-tree" title="098. 验证二叉搜索树" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

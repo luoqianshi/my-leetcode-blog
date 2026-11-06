@@ -40,10 +40,6 @@ class Solution:
         return pA
 ```
 
-## 图解演示
-
-<ProblemDemo slug="160-intersection-of-two-linked-lists" title="160. 相交链表" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(m + n)

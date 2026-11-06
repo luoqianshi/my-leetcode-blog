@@ -56,10 +56,6 @@ class Solution:
         return result
 ```
 
-## 图解演示
-
-<ProblemDemo slug="131-palindrome-partitioning" title="131. 分割回文串" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n · 2^n)，最坏（如 "aaaa"）每个位置切/不切都合法，方案数指数级

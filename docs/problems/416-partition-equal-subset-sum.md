@@ -40,10 +40,6 @@ class Solution:
         return dp[target]
 ```
 
-## 图解演示
-
-<ProblemDemo slug="416-partition-equal-subset-sum" title="416. 分割等和子集" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n × target)

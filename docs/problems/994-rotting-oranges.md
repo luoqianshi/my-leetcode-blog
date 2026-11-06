@@ -58,10 +58,6 @@ class Solution:
         return minutes if fresh == 0 else -1
 ```
 
-## 图解演示
-
-<ProblemDemo slug="994-rotting-oranges" title="994. 腐烂的橘子" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(m×n)

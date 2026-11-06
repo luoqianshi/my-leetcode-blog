@@ -53,10 +53,6 @@ class Solution:
         return True
 ```
 
-## 图解演示
-
-<ProblemDemo slug="234-palindrome-linked-list" title="234. 回文链表" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

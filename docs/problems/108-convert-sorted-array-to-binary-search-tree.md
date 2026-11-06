@@ -47,10 +47,6 @@ class Solution:
         return build(0, len(nums) - 1)
 ```
 
-## 图解演示
-
-<ProblemDemo slug="108-convert-sorted-array-to-binary-search-tree" title="108. 将有序数组转换为二叉搜索树" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，每个元素只创建一次结点

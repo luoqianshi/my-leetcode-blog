@@ -46,10 +46,6 @@ class Solution:
         return current_str
 ```
 
-## 图解演示
-
-<ProblemDemo slug="394-decode-string" title="394. 字符串解码" />
-
 ## 复杂度分析
 
 - **时间复杂度**: O(n)
