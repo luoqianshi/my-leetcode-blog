@@ -43,6 +43,10 @@ class Solution:
         return dummy.next
 ```
 
+## 图解演示
+
+<ProblemDemo slug="019-remove-nth-node-from-end-of-list" title="019. 删除链表的倒数第 N 个结点" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，一趟扫描

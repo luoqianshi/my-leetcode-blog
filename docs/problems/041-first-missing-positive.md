@@ -43,6 +43,10 @@ class Solution:
         return n + 1
 ```
 
+## 图解演示
+
+<ProblemDemo slug="041-first-missing-positive" title="041. 缺失的第一个正数" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，看似双重循环，但每次 while 交换都让一个元素永久归位，总交换次数 ≤ n，均摊 O(n)

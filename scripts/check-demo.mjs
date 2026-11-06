@@ -48,6 +48,7 @@ function makeStub() {
       tagName: (tag || 'div').toUpperCase(),
       style: new Proxy({}, { set: (t, k, v) => { t[k] = v; return true }, get: (t, k) => (k === 'setProperty' ? (p, v) => { t[p] = v } : t[k]) }),
       attrs: {},
+      dataset: {},
       childNodes: [],
       _text: '',
       disabled: false,
@@ -63,6 +64,7 @@ function makeStub() {
       setAttribute(k, v) { this.attrs[k] = String(v); if (k === 'class') this.className = String(v) },
       getAttribute(k) { return this.attrs[k] },
       appendChild(c) { this.childNodes.push(c); c.parentNode = this; return c },
+      replaceChildren(...children) { this.childNodes = []; children.forEach(c => this.appendChild(c)) },
       remove() { if (this.parentNode) { const i = this.parentNode.childNodes.indexOf(this); if (i >= 0) this.parentNode.childNodes.splice(i, 1) } },
       addEventListener(t, fn) { (this._ev ||= {})[t] = fn },
       dispatch(t, ev) { if (this._ev && this._ev[t]) this._ev[t](ev) },
@@ -255,7 +257,7 @@ function checkOne(file, expected) {
   else if (countEl.textContent === beforeCount) fail('定时器触发后步数没有推进')
   else ok(`自动播放推进：${beforeCount} → ${countEl.textContent}`)
 
-  key(' ')
+  if (playEl.textContent === '暂停') key(' ')
   if (playEl.textContent === '暂停') fail('再按空格没有暂停')
   else ok(`再按空格暂停（按钮文案「${playEl.textContent}」）`)
   const pausedCount = countEl.textContent
@@ -274,6 +276,34 @@ function checkOne(file, expected) {
   } else ok('自动播放到末步后停止，按钮文案变「重播」')
   if (stub.pendingTimers()) fail('末步后仍挂着定时器，会一直空转')
   key('r')
+
+  /* 切到边界示例时，旧用例的播放状态和进度都应清空。 */
+  const options = stub.document.getElementById('case-options').childNodes
+  if (options.length) {
+    const input = stub.document.getElementById('case-input')
+    const output = stub.document.getElementById('case-output')
+    const result = stub.document.getElementById('case-result')
+    const scrub = stub.document.getElementById('scrub')
+    const rows = stub.document.getElementById('state-rows')
+    const original = input.textContent
+    key(' ')
+    scrub.value = String(steps.length - 1)
+    scrub.dispatch('input')
+    if (stub.pendingTimers() || output.hidden || scrub.value !== String(steps.length - 1)) fail('播放中拖动进度条未跳到指定位置')
+    key(' ')
+    options[1].dispatch('click')
+    if (stub.pendingTimers() || input.textContent === original || !output.hidden || scrub.value !== '0') fail('切换用例未正确重置')
+    const last = Number(scrub.max)
+    if (last < 1) fail('边界示例缺少状态变化')
+    for (let i = 0; i <= last; i++) {
+      if (countEl.textContent !== `第 ${i + 1} / ${last + 1} 步` || !rows.childNodes.length) fail('边界示例的进度或图例为空')
+      key('ArrowRight')
+    }
+    if (output.hidden || !result.textContent.trim()) fail('边界示例没有展示最终结果')
+    options[0].dispatch('click')
+    if (input.textContent !== original || scrub.value !== '0' || Number(scrub.max) !== steps.length - 1) fail('返回典型示例失败')
+    else ok('用例切换、边界示例各帧和末步结果均可达')
+  }
 
   /* ---- 5. 主题消息 ---- */
   const msgHandler = (stub.listeners['message'] || [])[0]
@@ -302,6 +332,13 @@ if (args[0] === '--all') {
     ? readdirSync(DEMOS, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name).sort()
     : []
   if (!slugs.length) { console.error('✗ docs/public/demos 下没有任何演示'); process.exit(1) }
+  const problems = join(ROOT, 'docs', 'problems')
+  for (const name of readdirSync(problems).filter(name => /^\d+-.*\.md$/.test(name))) {
+    const slug = name.slice(0, -3)
+    const md = readFileSync(join(problems, name), 'utf8')
+    const entries = [...md.matchAll(/<ProblemDemo\b[^>]*\bslug="([^"]+)"/g)]
+    if (!slugs.includes(slug) || entries.length !== 1 || entries[0][1] !== slug) fail(slug + ' 缺少对应的演示或唯一入口')
+  }
   slugs.forEach((s) => checkOne(join(DEMOS, s, 'index.html')))
 } else if (args[0]) {
   checkOne(args[0], args[1])

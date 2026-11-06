@@ -39,6 +39,10 @@ class Solution:
         return dp[n]
 ```
 
+## 图解演示
+
+<ProblemDemo slug="139-word-break" title="139. 单词拆分" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n²)

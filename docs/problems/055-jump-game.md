@@ -35,6 +35,10 @@ class Solution:
         return True
 ```
 
+## 图解演示
+
+<ProblemDemo slug="055-jump-game" title="055. 跳跃游戏" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

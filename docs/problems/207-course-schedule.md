@@ -48,6 +48,10 @@ class Solution:
         return count == numCourses
 ```
 
+## 图解演示
+
+<ProblemDemo slug="207-course-schedule" title="207. 课程表" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(V+E)

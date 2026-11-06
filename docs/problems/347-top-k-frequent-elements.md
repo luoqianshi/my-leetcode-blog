@@ -40,6 +40,10 @@ class Solution:
         return [num for freq, num in heap]
 ```
 
+## 图解演示
+
+<ProblemDemo slug="347-top-k-frequent-elements" title="347. 前 K 个高频元素" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n log k)

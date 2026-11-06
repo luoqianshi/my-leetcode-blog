@@ -43,6 +43,10 @@ class Solution:
         return max_area
 ```
 
+## 图解演示
+
+<ProblemDemo slug="084-largest-rectangle-in-histogram" title="084. 柱状图中最大的矩形" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，每个下标各入栈、出栈一次

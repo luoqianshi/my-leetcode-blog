@@ -56,6 +56,10 @@ class Solution:
         return dummy.next
 ```
 
+## 图解演示
+
+<ProblemDemo slug="025-reverse-nodes-in-k-group" title="025. K 个一组翻转链表" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，每个结点只被常数次指针操作

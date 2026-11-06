@@ -47,6 +47,10 @@ class Solution:
         return count
 ```
 
+## 图解演示
+
+<ProblemDemo slug="437-path-sum-iii" title="437. 路径总和 III" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

@@ -39,6 +39,10 @@ class Solution:
         return longest
 ```
 
+## 图解演示
+
+<ProblemDemo slug="128-longest-consecutive-sequence" title="128. 最长连续序列" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

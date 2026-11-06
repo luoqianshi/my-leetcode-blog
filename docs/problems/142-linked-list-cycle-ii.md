@@ -49,6 +49,10 @@ class Solution:
         return None
 ```
 
+## 图解演示
+
+<ProblemDemo slug="142-linked-list-cycle-ii" title="142. 环形链表 II" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

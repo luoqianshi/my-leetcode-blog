@@ -44,6 +44,10 @@ class MinStack:
         return self.min_stack[-1]
 ```
 
+## 图解演示
+
+<ProblemDemo slug="155-min-stack" title="155. 最小栈" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

@@ -37,6 +37,10 @@ class Solution:
         return not stack
 ```
 
+## 图解演示
+
+<ProblemDemo slug="020-valid-parentheses" title="020. 有效的括号" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

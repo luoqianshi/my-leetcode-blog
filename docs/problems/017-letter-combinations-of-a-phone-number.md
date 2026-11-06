@@ -52,6 +52,10 @@ class Solution:
         return result
 ```
 
+## 图解演示
+
+<ProblemDemo slug="017-letter-combinations-of-a-phone-number" title="017. 电话号码的字母组合" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(4^n × n)，每个数字最多 4 个字母（7 和 9），n 为 digits 长度

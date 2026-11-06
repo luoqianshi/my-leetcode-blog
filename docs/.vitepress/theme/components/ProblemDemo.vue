@@ -1,25 +1,23 @@
 <template>
-  <ClientOnly>
-    <figure class="problem-demo">
-      <div ref="hostRef" class="problem-demo-host" :style="height ? { height: `${height}px` } : undefined">
-        <iframe
-          v-if="activated && status !== 'error'"
-          ref="frameRef"
-          :src="src"
-          :title="`${title} — 算法图解演示`"
-          class="problem-demo-frame"
-          loading="lazy"
-          @load="onFrameLoad"
-        ></iframe>
-        <div v-else class="problem-demo-placeholder">
-          <span>{{ placeholderText }}</span>
-        </div>
+  <figure class="problem-demo">
+    <div ref="hostRef" class="problem-demo-host" :style="height ? { height: `${height + 2}px` } : undefined">
+      <iframe
+        v-if="activated && status !== 'error'"
+        ref="frameRef"
+        :src="src"
+        :title="`${title} — 算法图解演示`"
+        class="problem-demo-frame"
+        loading="lazy"
+        @load="onFrameLoad"
+      ></iframe>
+      <div v-else class="problem-demo-placeholder">
+        <span>{{ placeholderText }}</span>
       </div>
-      <figcaption class="problem-demo-cap">
-        <a class="problem-demo-open" :href="src" target="_blank" rel="noopener noreferrer">在新标签页打开 ↗</a>
-      </figcaption>
-    </figure>
-  </ClientOnly>
+    </div>
+    <figcaption class="problem-demo-cap">
+      <a class="problem-demo-open" :href="src" target="_blank" rel="noopener noreferrer">在新标签页打开 ↗</a>
+    </figcaption>
+  </figure>
 </template>
 
 <script setup lang="ts">

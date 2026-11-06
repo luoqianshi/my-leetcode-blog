@@ -37,6 +37,10 @@ class Solution:
         return left
 ```
 
+## 图解演示
+
+<ProblemDemo slug="035-search-insert-position" title="035. 搜索插入位置" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(log n)

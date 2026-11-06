@@ -33,6 +33,10 @@ class Solution:
         return candidate
 ```
 
+## 图解演示
+
+<ProblemDemo slug="169-majority-element" title="169. 多数元素" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

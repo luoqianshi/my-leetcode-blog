@@ -43,6 +43,10 @@ class Solution:
         return dummy.next
 ```
 
+## 图解演示
+
+<ProblemDemo slug="023-merge-k-sorted-lists" title="023. 合并 K 个升序链表" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n log k)

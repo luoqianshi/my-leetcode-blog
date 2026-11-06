@@ -70,6 +70,10 @@ class Solution:
         return s[start:start + max_len]
 ```
 
+## 图解演示
+
+<ProblemDemo slug="005-longest-palindromic-substring" title="005. 最长回文子串" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n²)

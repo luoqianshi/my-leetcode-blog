@@ -12,7 +12,7 @@ var CFG = (typeof STAGE !== 'undefined' && STAGE) ? STAGE : { w: 660, h: 300, mi
 
 var app = document.getElementById('app');
 var svg = document.getElementById('svg');
-svg.setAttribute('viewBox', '0 0 ' + CFG.w + ' ' + CFG.h);
+if (svg) svg.setAttribute('viewBox', '0 0 ' + CFG.w + ' ' + CFG.h);
 if (CFG.minW) document.documentElement.style.setProperty('--dm-stage-minw', CFG.minW + 'px');
 
 var el = {
@@ -68,7 +68,7 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(reportHeig
 
 /* ---------- 播放控制 ---------- */
 
-var BASE_MS = 900;
+var BASE_MS = (typeof FRAME_MS === 'number') ? FRAME_MS : 900;
 var SPEEDS = [0.5, 1, 1.5, 2];
 var idx = 0;
 var playing = false;
@@ -139,14 +139,16 @@ el.speed.addEventListener('click', function () {
   if (playing) schedule();
 });
 el.scrub.addEventListener('input', function () {
+  var requested = Number(el.scrub.value);
   if (playing) pause();
-  go(Number(el.scrub.value));
+  go(requested);
 });
 
 document.addEventListener('keydown', function (e) {
   var t = e.target;
   /* range 上的方向键要留给原生行为，否则进度条拖不动 */
   if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (t && t.tagName === 'BUTTON' && e.key === ' ') return;  // 保留按钮的原生键盘激活
   switch (e.key) {
     case 'ArrowRight': e.preventDefault(); stepBy(1); break;
     case 'ArrowLeft': e.preventDefault(); stepBy(-1); break;

@@ -34,6 +34,10 @@ class Solution:
         return dp[-1]
 ```
 
+## 图解演示
+
+<ProblemDemo slug="062-unique-paths" title="062. 不同路径" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(m×n)

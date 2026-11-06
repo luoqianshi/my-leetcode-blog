@@ -38,6 +38,10 @@ class Solution:
         return root
 ```
 
+## 图解演示
+
+<ProblemDemo slug="226-invert-binary-tree" title="226. 翻转二叉树" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

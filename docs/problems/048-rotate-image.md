@@ -42,6 +42,10 @@ class Solution:
             matrix[i].reverse()
 ```
 
+## 图解演示
+
+<ProblemDemo slug="048-rotate-image" title="048. 旋转图像" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n²)

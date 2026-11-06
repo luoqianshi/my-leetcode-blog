@@ -35,6 +35,10 @@ class Solution:
         return max_profit
 ```
 
+## 图解演示
+
+<ProblemDemo slug="121-best-time-to-buy-and-sell-stock" title="121. 买卖股票的最佳时机" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

@@ -938,12 +938,23 @@ h1, h2, h3, h4 {
 }
 
 /* 图解演示 —— iframe 承载 docs/public/demos/<slug>/index.html */
+.demo-jump {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lc-accent);
+  padding: 6px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .problem-demo {
   margin: 20px 0;
 }
 
 .problem-demo-host {
   position: relative;
+  width: 100%;
   aspect-ratio: 16 / 9; /* 收到 iframe 上报的高度后被内联 height 覆盖 */
   min-height: 200px;
   overflow: hidden;

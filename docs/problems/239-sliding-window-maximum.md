@@ -49,6 +49,10 @@ class Solution:
         return result
 ```
 
+## 图解演示
+
+<ProblemDemo slug="239-sliding-window-maximum" title="239. 滑动窗口最大值" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，均摊每元素常数次操作

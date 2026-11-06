@@ -52,6 +52,10 @@ class Solution:
         return water
 ```
 
+## 图解演示
+
+<ProblemDemo slug="042-trapping-rain-water" title="042. 接雨水" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

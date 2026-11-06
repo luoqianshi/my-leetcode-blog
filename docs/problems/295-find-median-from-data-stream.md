@@ -60,6 +60,10 @@ class MedianFinder:
         return (-self.small[0] + self.large[0]) / 2
 ```
 
+## 图解演示
+
+<ProblemDemo slug="295-find-median-from-data-stream" title="295. 数据流的中位数" />
+
 ## 复杂度分析
 
 - **时间复杂度**: addNum O(log n)，findMedian O(1)

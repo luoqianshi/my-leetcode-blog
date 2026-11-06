@@ -59,6 +59,10 @@ class Solution:
         return results
 ```
 
+## 图解演示
+
+<ProblemDemo slug="051-n-queens" title="051. N 皇后" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n!)，第一行 n 种选择，第二行约 n-1 种……剪枝后远小于 n^n 但上界仍是阶乘级

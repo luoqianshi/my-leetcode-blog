@@ -46,6 +46,10 @@ class Solution:
         return dp[-1]
 ```
 
+## 图解演示
+
+<ProblemDemo slug="064-minimum-path-sum" title="064. 最小路径和" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(mn)

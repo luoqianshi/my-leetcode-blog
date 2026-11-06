@@ -44,6 +44,10 @@ class Solution:
         return result
 ```
 
+## 图解演示
+
+<ProblemDemo slug="118-pascals-triangle" title="118. 杨辉三角" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n²)，前 n 行的元素总数为 n(n+1)/2

@@ -41,6 +41,10 @@ class Solution:
         return False
 ```
 
+## 图解演示
+
+<ProblemDemo slug="240-search-a-2d-matrix-ii" title="240. 搜索二维矩阵 II" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(m + n)

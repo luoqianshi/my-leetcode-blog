@@ -53,6 +53,10 @@ class Solution:
         return dp[m][n]
 ```
 
+## 图解演示
+
+<ProblemDemo slug="072-edit-distance" title="072. 编辑距离" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(m×n)

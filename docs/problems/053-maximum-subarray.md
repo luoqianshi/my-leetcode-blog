@@ -35,6 +35,10 @@ class Solution:
         return result
 ```
 
+## 图解演示
+
+<ProblemDemo slug="053-maximum-subarray" title="053. 最大子数组和" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

@@ -38,6 +38,10 @@ class Solution:
         return dp[m][n]
 ```
 
+## 图解演示
+
+<ProblemDemo slug="1143-longest-common-subsequence" title="1143. 最长公共子序列" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(m×n)

@@ -46,6 +46,10 @@ class Solution:
         return dummy.next
 ```
 
+## 图解演示
+
+<ProblemDemo slug="024-swap-nodes-in-pairs" title="024. 两两交换链表中的节点" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)

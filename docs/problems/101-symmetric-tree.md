@@ -43,6 +43,10 @@ class Solution:
         return is_mirror(root.left, root.right)
 ```
 
+## 图解演示
+
+<ProblemDemo slug="101-symmetric-tree" title="101. 对称二叉树" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，每个结点恰好访问一次

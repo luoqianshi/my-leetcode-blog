@@ -14,6 +14,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
+import { renderDemo } from './render-demo.mjs'
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)))
 const DEMOS = join(ROOT, 'docs', 'public', 'demos')
@@ -27,7 +28,6 @@ const rel = (p) => relative(ROOT, p).split('\\').join('/')
 const fail = (msg) => { console.error(`✗ ${msg}`); process.exit(1) }
 /** 仓库现状是 LF；Windows 下读到的模板可能是 CRLF，统一归一 */
 const lf = (s) => s.replace(/\r\n/g, '\n')
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 function problemSlugs() {
   return readdirSync(PROBLEMS)
@@ -106,15 +106,7 @@ const title = values.title ?? titleOf(slug)
 const archCssPath = join(TPL, 'arch', `${values.archetype}.css`)
 const archCss = existsSync(archCssPath) ? readFileSync(archCssPath, 'utf8') : ''
 
-const html = lf(
-  readFileSync(join(TPL, 'shell.html'), 'utf8')
-    .replace('/*__TOKENS__*/', lf(readFileSync(join(TPL, 'tokens.css'), 'utf8')).trimEnd())
-    .replace('/*__ARCH_CSS__*/', lf(archCss).trimEnd())
-    .replace('/*__ARCH__*/', lf(readFileSync(archJs, 'utf8')).trimEnd())
-    .replace('/*__KERNEL__*/', lf(readFileSync(join(TPL, 'kernel.js'), 'utf8')).trimEnd())
-    .replaceAll('{{SLUG}}', slug)
-    .replaceAll('{{TITLE}}', esc(title))
-)
+const html = renderDemo({ slug, title, css: lf(archCss).trimEnd(), js: lf(readFileSync(archJs, 'utf8')).trimEnd() })
 
 const leftover = html.match(/\{\{[A-Z_]+\}\}|\/\*__[A-Z_]+__\*\//g)
 if (leftover) fail(`模板占位符未被替换：${[...new Set(leftover)].join(', ')}`)

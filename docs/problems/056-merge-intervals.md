@@ -39,6 +39,10 @@ class Solution:
         return result
 ```
 
+## 图解演示
+
+<ProblemDemo slug="056-merge-intervals" title="056. 合并区间" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n log n)

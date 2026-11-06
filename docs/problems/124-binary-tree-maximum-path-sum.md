@@ -53,6 +53,10 @@ class Solution:
         return self.max_sum
 ```
 
+## 图解演示
+
+<ProblemDemo slug="124-binary-tree-maximum-path-sum" title="124. 二叉树中的最大路径和" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)，每个结点访问一次

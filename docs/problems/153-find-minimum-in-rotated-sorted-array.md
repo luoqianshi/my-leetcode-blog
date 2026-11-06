@@ -42,6 +42,10 @@ class Solution:
         return nums[left]
 ```
 
+## 图解演示
+
+<ProblemDemo slug="153-find-minimum-in-rotated-sorted-array" title="153. 寻找旋转排序数组中的最小值" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(log n)

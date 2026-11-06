@@ -59,6 +59,10 @@ class Solution:
         return max_len
 ```
 
+## 图解演示
+
+<ProblemDemo slug="032-longest-valid-parentheses" title="032. 最长有效括号" />
+
 ## 复杂度分析
 
 - **时间复杂度**: O(n)
